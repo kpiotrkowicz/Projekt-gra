@@ -44,3 +44,5 @@ bin/
 
 # Build (gdy kompilujesz SFML sam)
 build/
+
+.vs/
