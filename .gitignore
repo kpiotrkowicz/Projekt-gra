@@ -37,7 +37,7 @@ cmake-build*/
 *.pdb
 *.exp
 
-# Foldery zale¿noœci SFML (czêsto w paczce)
+# Foldery zaleÅ¼noÅ›ci SFML (czÄ™sto w paczce)
 extlibs/
 lib/
 bin/
