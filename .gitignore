@@ -1,0 +1,46 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake-build*/
+
+# Binaries
+*.exe
+*.obj
+*.lib
+*.pdb
+*.dll
+
+# Logs
+*.log
+
+
+# SFML bin / dll
+*.dll
+
+# Liby i buildy
+*.lib
+*.a
+*.pdb
+*.exp
+
+# Foldery zależności SFML (często w paczce)
+extlibs/
+lib/
+bin/
+
+# Build (gdy kompilujesz SFML sam)
+build/
