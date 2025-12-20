@@ -1,48 +1,20 @@
 # Visual Studio
 .vs/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+*.vcxproj.user
+*.opendb
+*.VC.db
 
-# Build
-Debug/
-Release/
-x64/
-x86/
-build/
-
-# CMake
-CMakeFiles/
-CMakeCache.txt
-cmake-build*/
-
-# Binaries
-*.exe
-*.obj
-*.lib
-*.pdb
-*.dll
-
-# Logs
+# Build cache
+ipch/
 *.log
 
+# Temporary files
+*.tmp
+*.tlog
 
-# SFML bin / dll
-*.dll
+# Ignore CMake cache if kiedyś użyjesz
+CMakeCache.txt
+CMakeFiles/
 
-# Liby i buildy
-*.lib
-*.a
-*.pdb
-*.exp
-
-# Foldery zależności SFML (często w paczce)
-extlibs/
-lib/
-bin/
-
-# Build (gdy kompilujesz SFML sam)
-build/
-
-.vs/
+# DO NOT IGNORE x64 (potrzebne dla SFML)
+!x64/
