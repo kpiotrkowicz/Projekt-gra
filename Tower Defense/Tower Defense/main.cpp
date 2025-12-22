@@ -36,8 +36,8 @@ int main() {
 
 
 		// Rysowanie  pociskow (debug)
-		foe(const auto& cel : cele) {
-            sf::RectangleShape ksztatlCelu(20.f,20.f);
+		for(const auto& cel : cele) {
+            sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
             ksztaltCelu.setOrigin(5.f, 5.f);
             ksztaltCelu.setPosition(cel.pozycja);
             ksztaltCelu.setFillColor(sf::Color::Green);

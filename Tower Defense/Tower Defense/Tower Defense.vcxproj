@@ -132,7 +132,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="KierownikWiezy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pocisk.cpp" />
+    <ClCompile Include="wieza.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="interfejs.h" />
+    <ClInclude Include="KierownikWiezy.h" />
+    <ClInclude Include="pocisk.h" />
+    <ClInclude Include="wieza.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

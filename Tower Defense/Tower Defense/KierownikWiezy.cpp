@@ -17,9 +17,11 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 	// Aktualizacja wszystkichh pociskow
 	for (auto& pocisk_obiekt : pociski) {
 		// Znajdz pozycje celu pocisku
-		if (pocisk_obiekt->czy_zywy) {
+		if (pocisk_obiekt->CzyZywy()) {
 			sf::Vector2f pozycjaCelu;
 			bool cel_znaleziony = false;
+
+			//szuka pozycji celu w liscie celow
 			for (const auto& cel : cele) {
 				if (cel.id == pocisk_obiekt->PobierzIdCelu()) {
 					pozycjaCelu = cel.pozycja;
@@ -40,7 +42,7 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 
 	//zwalniamiy pamiec i usuwamy niepotrzebne pociski
 	pociski.erase(remove_if(pociski.begin(), pociski.end(),
-		[](const unikalne_ptr<pocisk>& p) { return !p->CzyZywy(); }),
+		[](const unique_ptr<pocisk>& p) { return !p->CzyZywy(); }),
 		pociski.end());//tymczasowa zmienna p to kazdy pocisk z wektora pociski jesli p nie zywy to usuwamy go z wektora
 
 }
@@ -83,7 +85,7 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 		PrzyznajObrazenia(celId, ilosc);
 	};
 	// Dodaj nowy pocisk do listy
-	pociski.emplace_back(nowe_unikalne_id<pocisk>(
+	pociski.emplace_back(make_unique<pocisk>(
 		nastepneIdPocisku++,
 		celId,
 		pozycjaStartowa,

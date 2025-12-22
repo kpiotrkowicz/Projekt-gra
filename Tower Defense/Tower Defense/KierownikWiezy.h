@@ -4,6 +4,7 @@
 #include "pocisk.h"
 #include <memory>
 #include <vector>
+
 using namespace std;
 
 class KierownikWiezy {
@@ -18,7 +19,7 @@ public:
 private:
 	vector<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami
-	vector<unikalne_ptr<pocisk>> pociski; //lista pociskow zarzadzana przez kierownika wiezy
+	vector<unique_ptr<pocisk>> pociski; //lista pociskow zarzadzana przez kierownika wiezy
 
 	int nastepneIdWiezy = 1; //unikalne id dla wiez
 	int nastepneIdPocisku = 1; //unikalne id dla pociskow

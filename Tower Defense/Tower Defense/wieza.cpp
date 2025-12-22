@@ -13,7 +13,7 @@ wieza:: wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float
 	  czasOdOstatniegoStrzalu(0.0f), aktualnyCelId(-1),
 	  przyznajObrazeniaCallback(callback),
 	  utworzPociskCallback(callbackPocisk),
-	  typTargetowania("najblizszy"),aktualnyCelId(-1) // Domyslny typ targetowania
+	  typTargetowania("najblizszy")// Domyslny typ targetowania
 {
 	cout << "Wieza utworzona o ID: " << id << " na pozycji (" << pozycja.x << ", " << pozycja.y << ")\n"<<endl;
 }
@@ -43,7 +43,7 @@ void wieza::Aktualizuj(float czasDelta, const vector<Cel>& potencjalneCele)
 
 void wieza::ZnajdzCel(const vector<Cel>& potencjalneCele)
 {
-	
+
 	aktualnyCelId = -1;// Domyslnie brak celu
 	float najblizszyDystansKw = numeric_limits<float>::max(); // tu uzywamy tego limits - Inicjalizacja na maksymalna wartosc float
 	float zasiegkw = zasieg * zasieg; // Porownujemy kwadraty dystansow, aby uniknac sqrt
@@ -55,15 +55,14 @@ void wieza::ZnajdzCel(const vector<Cel>& potencjalneCele)
 		float dy = cel.pozycja.y - pozycja.y;
 		float dystanskw = dx * dx + dy * dy;
 		// Sprawdz czy cel jest w zasiegu
-		
-		if (dystanskw <= zasiegkw && zasiegkw < najmniejszyDystansKwadrat) {
+
+		if (dystanskw <= zasiegkw && dystanskw < najblizszyDystansKw) {
 			najblizszyDystansKw = dystanskw;
 			aktualnyCelId = cel.id;
 		}
-			
-		
-	
-	
+
+
+	}
 }
 
 //jak strzelac - wywolujemy callback do tworzenia pocisku
@@ -72,7 +71,7 @@ void wieza::Strzel()
 {
 	// Tutaj wywolujemy callback do tworzenia pocisku
 	// Przekazujemy ID wiezy, ID celu, pozycje startowa pocisku (pozycja wiezy) i obrazenia
-	if (aktualnyCelId != -1&& utrworzPociskCallback) // Upewnij sie, ze mamy cel
+	if (aktualnyCelId != -1&& utworzPociskCallback) // Upewnij sie, ze mamy cel
 	{
 		cout << "Wieza " << id << " strzelila do celu " << aktualnyCelId << endl;
 		utworzPociskCallback(id, aktualnyCelId, pozycja, obrazenia);
@@ -90,9 +89,9 @@ void wieza::zasiegDebug(sf::RenderWindow& window)
 	window.draw(okrag);
 
 	//rysunek samej wiezy
-	sf::RectangleShape towershape({ 20.0f,40.0f });
-	towerShape.setOrigin(10.0f, 20.0f); // Srodek wiezy
-	towerShape.setPosition(pozycja);
-	towerShape.setFillColor(sf::Color::Green);
-	window.draw(towerShape);
+	sf::RectangleShape wiezaksztalt({ 20.0f,40.0f });
+	wiezaksztalt.setOrigin(10.0f, 20.0f); // Srodek wiezy
+	wiezaksztalt.setPosition(pozycja);
+	wiezaksztalt.setFillColor(sf::Color::Green);
+	window.draw(wiezaksztalt);
 }
