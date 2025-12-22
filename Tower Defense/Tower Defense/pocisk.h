@@ -12,17 +12,18 @@ public:
 	pocisk(int id, int id_celu, sf::Vector2f pozycjaStartowa, float obrazenia, FZwrotnaObrazen callback);
 
 	void Aktualizuj(float czasdelta, sf::Vector2f pozycjaCelu);
-	void zasiegDebug(sf::RenderWindow& window);
+	void zasiegDebug(sf::RenderWindow& window) const;
 	bool CzyZywy() const { return czy_zywy; }
 	int PobierzIdCelu() const { return id_celu; }
+	bool czy_zywy = true; //czy pocisk jest aktywny i czy jest zuzyty czy nie 
+
 
 private:
 	int id; //unikalne id pocisku
 	int id_celu; //id celu do ktorego leci pocisk
 	sf::Vector2f pozycja; //pozycja pocisku
 	float predkosc=400.0f; //predkosc pocisku (stala)
-	bool czy_zywy=true; //czy pocisk jest aktywny i czy jest zuzyty czy nie 
-
+	float obrazenia; //obrazenia jakie zadaje pocisk
 	FZwrotnaObrazen przyznajObrazeniaCallback; //callback do przyznawania obrazen
 
 

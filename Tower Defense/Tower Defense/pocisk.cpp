@@ -21,8 +21,8 @@ void pocisk::Aktualizuj(float czas_delta, sf::Vector2f pozycjaCelu)
 
 	if (odleglosc > 0)
 	{
-		kierunek.x = kierunek.x / dystans;
-		kierunek.y = kierunek.y / dystans;
+		kierunek.x = kierunek.x / odleglosc;
+		kierunek.y = kierunek.y / odleglosc;
 
 	}
 	//trzeba obliczyc ruch na ten czas/ klatke 
@@ -45,8 +45,8 @@ void pocisk::Aktualizuj(float czas_delta, sf::Vector2f pozycjaCelu)
 	{
 		pozycja += ruch; // Aktualizuj pozycje pocisku i kontynuuje lot 
 	}
-
-	void pocisk::zasiegDebug(sf::RenderWindow & window) {
+}
+	void pocisk::zasiegDebug(sf::RenderWindow & window) const {
 		if (czy_zywy==false) return;
 		sf::CircleShape kropka(5.f);
 		kropka.setOrigin(5.f, 5.f);
