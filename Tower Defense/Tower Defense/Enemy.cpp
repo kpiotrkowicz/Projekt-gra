@@ -1,58 +1,51 @@
 #include "Enemy.h"
 #include <cmath>
 
-int Enemy::NEXT_ID = 0;
-
-Enemy::Enemy(const std::vector<sf::Vector2f>& path, float speed, int hp)
-    : path(path), speed(speed), hp(hp)
+Enemy::Enemy(const std::vector<sf::Vector2f>& p, float s, int hp, const sf::Texture& texture)
+    : path(p), speed(s), currentHp(hp), hasReachedEnd(false)
 {
-    id = NEXT_ID++;
-    shape.setRadius(12.f);
-    shape.setOrigin(12.f, 12.f);
-    shape.setFillColor(sf::Color::Red);
+    // Przypisanie tekstury i ustawienie punktu obrotu na œrodek grafiki
+    sprite.setTexture(texture);
+    sf::FloatRect bounds = sprite.getLocalBounds();
+    sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 
-    if (!path.empty())
-        shape.setPosition(path[0]);
-}
-
-void Enemy::update(float dt)
-{
-    if (currentPoint >= path.size() - 1) {
-        reachedBase = true;
-        return;
+    // Ustawienie pozycji startowej na pierwszym punkcie œcie¿ki (wspolrzednej)
+    if (!path.empty()) {
+        sprite.setPosition(path[0]);
+        currentPointIndex = 1;
     }
+}
 
-    sf::Vector2f pos = shape.getPosition();
-    sf::Vector2f target = path[currentPoint + 1];
+void Enemy::update(float dt) {
+    // Przerwanie aktualizacji, jeœli przeciwnik zakoñczy³ trasê, zgin¹³ lub œcie¿ka wygas³a
+    if (hasReachedEnd || isDead() || currentPointIndex >= path.size()) return;
 
-    sf::Vector2f dir = target - pos;
-    float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+    sf::Vector2f targetPos = path[currentPointIndex];
+    sf::Vector2f currentPos = sprite.getPosition();
 
-    if (length < 1.0f) {
-        currentPoint++;
-        return;
+    // Obliczanie wektora kierunku i dystansu do nastêpnego punktu
+    sf::Vector2f direction = targetPos - currentPos;
+    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+	// Sprawdzanie pozycji celu, jezeli jest blisko, przejdz do kolejnego punktu
+    if (distance < 2.0f) {
+        currentPointIndex++;
+        if (currentPointIndex >= path.size()) {
+            hasReachedEnd = true;
+        }
     }
+    else {
+        // Prêdkoœci ruchu 
+        sf::Vector2f velocity = (direction / distance) * speed;
+        sprite.move(velocity * dt);
 
-    dir /= length;
-    shape.move(dir * speed * dt);
+        // Obliczanie k¹ta i rotacja postaci w stronê kierunku poruszanie siê
+        float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159f;
+        sprite.setRotation(angle);
+    }
 }
 
-void Enemy::draw(sf::RenderWindow& window)
-{
-    window.draw(shape);
-}
-
-bool Enemy::isDead() const
-{
-    return hp <= 0;
-}
-
-bool Enemy::reachedEnd() const
-{
-    return reachedBase;
-}
-
-void Enemy::takeDamage(int dmg)
-{
-    hp -= dmg;
+void Enemy::draw(sf::RenderWindow& window) {
+    // Wyœwietlenie grafiki przeciwnika w oknie
+    window.draw(sprite);
 }

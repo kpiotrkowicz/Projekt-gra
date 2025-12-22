@@ -4,28 +4,30 @@
 
 class Enemy {
 public:
-    Enemy(const std::vector<sf::Vector2f>& path, float speed, int hp);
+    // Inicjalizacja przeciwnika z okreœlon¹ œcie¿k¹, prêdkoœci¹, punktami ¿ycia i tekstur¹
+    Enemy(const std::vector<sf::Vector2f>& path, float speed, int hp, const sf::Texture& texture);
 
+    // Aktualizacja stanu logicznego obiektu w ka¿dej klatce
     void update(float dt);
+
+    // Renderowanie przeciwnika w oknie gry
     void draw(sf::RenderWindow& window);
 
-    bool isDead() const;
-    bool reachedEnd() const;
+    // Weryfikacja, czy punkty ¿ycia spad³y do zera 
+    bool isDead() const { return currentHp <= 0; }
 
-    int getId() const { return id; }
-    void takeDamage(int dmg);
+    // Sprawdzenie, czy przeciwnik ukoñczy³ ca³¹ dostêpn¹ œcie¿kê
+    bool reachedEnd() const { return hasReachedEnd; }
+
+    // Pobranie aktualnej liczby punktów ¿ycia
+    int getHp() const { return currentHp; }
 
 private:
-    static int NEXT_ID;
-    int id;
+    std::vector<sf::Vector2f> path; // Kontener przechowuj¹cy wspó³rzêdne punktów drogi
+    size_t currentPointIndex = 0;    // Indeks aktualnego punktu docelowego na œcie¿ce
 
-    std::vector<sf::Vector2f> path;
-    int currentPoint = 0;
-
-    sf::CircleShape shape;
-
-    float speed;
-    int hp;
-
-    bool reachedBase = false;
+    sf::Sprite sprite;      // Obiekt graficzny reprezentuj¹cy przeciwnika
+    float speed;            // Szybkoœæ poruszania siê jednostki
+    int currentHp;          // Aktualny stan zdrowia
+    bool hasReachedEnd = false; // Flaga informuj¹ca o dotarciu do koñca trasy
 };
