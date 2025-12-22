@@ -1,5 +1,5 @@
 #pragma once
-#include <Interface/interfejs.h>
+#include "Interfejs.h"
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
