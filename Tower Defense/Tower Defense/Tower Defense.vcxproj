@@ -142,6 +142,7 @@
     <ClInclude Include="KierownikWiezy.h" />
     <ClInclude Include="pocisk.h" />
     <ClInclude Include="wieza.h" />
+    <ClInclude Include="zabojcacelow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

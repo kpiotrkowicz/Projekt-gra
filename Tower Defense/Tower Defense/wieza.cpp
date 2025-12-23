@@ -3,6 +3,7 @@
 #include <iostream>
 #include <limits> //inf o cechach typow numerycznych
 
+
 using namespace std;
 
 // Konstruktor wiezy

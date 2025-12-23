@@ -1,11 +1,15 @@
 #include "KierownikWiezy.h"
+#include <iostream>
+#include <functional>
 #include <algorithm>//zebysmy mogli usuwac pociski z wektora
 using namespace std;
 
-KierownikWiezy::KierownikWiezy() {
-	// Konstruktor domyslny
-	cout << "Kierownik wiezy utworzony\n" << endl;
+KierownikWiezy::KierownikWiezy(FZwrotnaObrazen zewnetrznyCallbackObrazen)
+	: zewnetrznyCallbackObrazen(zewnetrznyCallbackObrazen) {
+	// Konstruktor kierownika wiezy
+	cout << "Kierownik utworzony.\n" << endl;
 }
+
 
 void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 	// Aktualizuj wszystkie wieze- szukaja cele i w nie strzelaja 
@@ -58,7 +62,7 @@ void KierownikWiezy::zasiegDebug(sf::RenderWindow& window) {
 	}
 }
 
-void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, float zasieg, float obrazenia, float czasOdnowienia) {
+void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 	// Tworzenie callbackow
 	FZwrotnaObrazen callbackObrazen = [this](int celId, float ilosc) {
 		PrzyznajObrazenia(celId, ilosc);
@@ -66,6 +70,10 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, float zasieg, float obraze
 	FUtworzPocisk callbackPocisk = [this](int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
 		UtworzPocisk(wiezaId, celId, pozycjaStartowa, obrazenia);
 	};
+	float zasieg=150.0f;
+	float obrazenia=10.0f;
+	float czasOdnowienia=1.5f;
+
 	// Dodaj nowa wieze do listy
 	wieze.emplace_back(nastepneIdWiezy++,
 		pozycja, zasieg,
@@ -81,9 +89,9 @@ void KierownikWiezy::PrzyznajObrazenia(int celId, float ilosc) {
 
 void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
 	// Tworzenie callbacku do przyznawania obrazen
-	FZwrotnaObrazen callbackObrazen = [this](int celId, float ilosc) {
-		PrzyznajObrazenia(celId, ilosc);
-	};
+	FZwrotnaObrazen callbackObrazen = bind(&KierownikWiezy::PrzyznajObrazenia,this,placeholders::_1, placeholders::_2);
+		
+	
 	// Dodaj nowy pocisk do listy
 	pociski.emplace_back(make_unique<pocisk>(
 		nastepneIdPocisku++,
