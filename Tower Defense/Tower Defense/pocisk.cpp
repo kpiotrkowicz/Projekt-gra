@@ -4,7 +4,7 @@
 using namespace std;
 
 pocisk::pocisk(int id, int id_celu, sf::Vector2f pozycjaStartowa, float obrazenia, FZwrotnaObrazen callback)
-	: id(id), id_celu(id_celu), pozycja(pozycjaStartowa), czy_zywy(true), przyznajObrazeniaCallback(callback)
+	: id(id), id_celu(id_celu), pozycja(pozycjaStartowa), czy_zywy(true),obrazenia(obrazenia), przyznajObrazeniaCallback(callback)
 {
 	cout << "Pocisk o ID: " << id << " leci do celu o ID: " << id_celu << " z pozycji (" << pozycja.x << ", " << pozycja.y << ")\n" << endl;
 }

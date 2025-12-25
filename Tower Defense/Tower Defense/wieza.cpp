@@ -96,3 +96,21 @@ void wieza::zasiegDebug(sf::RenderWindow& window)
 	wiezaksztalt.setFillColor(sf::Color::Green);
 	window.draw(wiezaksztalt);
 }
+
+bool wieza::Ulepsz()
+{
+	if (poziom < MAKSYMPOZIOM)
+	{
+		poziom++;
+		zasieg *= 1.5f; // Zwieksz zasieg o 20%
+		obrazenia *= 1.5f; // Zwieksz obrazenia o 50%
+		czasOdnowienia *= 0.9f; // Zmniejsz czas odnowienia o 10%
+		cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
+		return true;
+	}
+	else
+	{
+		cout << "Wieza " << id << " jest juz na maksymalnym poziomie!" << endl;
+		return false;
+	}
+}

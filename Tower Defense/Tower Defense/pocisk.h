@@ -16,7 +16,7 @@ public:
 	bool CzyZywy() const { return czy_zywy; }
 	int PobierzIdCelu() const { return id_celu; }
 	bool czy_zywy = true; //czy pocisk jest aktywny i czy jest zuzyty czy nie 
-
+	float PobierzObrazenia() const { return obrazenia; }
 
 private:
 	int id; //unikalne id pocisku

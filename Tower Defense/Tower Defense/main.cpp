@@ -12,7 +12,7 @@ using namespace std;
 map<int, ZabojcaCelow> mapa_wrogow;
 
 //funkcja ktora wywola kierownik wiezy gdy pocisk trafi w cel
-void PrzyznajObrazenia(int celId, float ilosobrazen) {
+static void PrzyznajObrazenia(int celId, float ilosobrazen) {
     auto it = mapa_wrogow.find(celId);
     if (it != mapa_wrogow.end()) {
         it->second.obrazeniacelu(ilosobrazen);
@@ -24,9 +24,9 @@ void PrzyznajObrazenia(int celId, float ilosobrazen) {
 };
 
 //tworzenie celow - funkcja wywolywana przez wieze przy strzale
-vector<Cel>StworzListeCelow() {
+static vector<Cel>StworzListeCelow() {
 vector<Cel>lista_celow;
-for (const auto& para : mapa_wrogow) {
+for (const auto& para : mapa_wrogow) {//iteracja po mapie
     if (para.second.zycie > 0.0f) {
         lista_celow.push_back({ 
             
@@ -36,7 +36,7 @@ for (const auto& para : mapa_wrogow) {
 }return lista_celow;
 };
 
-void usunpokonanecele() {
+static void usunpokonanecele() {
     for (auto it = mapa_wrogow.begin(); it != mapa_wrogow.end();) {
         if (it->second.zycie <= 0.0f) {
             it = mapa_wrogow.erase(it); // Usun cel z mapy, jesli zostal zniszczony
@@ -96,18 +96,18 @@ int main() {
 
         window.clear(sf::Color(20,20,30));
             
-		kierownik_Wiezy.DodajWieze(window);// rysowanie wiez
+		//kierownik_Wiezy.DodajWieze(window);// rysowanie wiez
 
 		// Rysowanie  pociskow (debug)
 		for(const auto& para : mapa_wrogow) {
             sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
-            ksztaltCelu.setOrigin(5.f, 5.f);
-            ksztaltCelu.setPosition(mapa_wrogow.pozycja);
+            ksztaltCelu.setOrigin(10.f, 10.f);
+            ksztaltCelu.setPosition(para.second.pozycja);
             ksztaltCelu.setFillColor(sf::Color::Green);
             window.draw(ksztaltCelu);
         }
 		
-		kierownik_Wiezy.zasiegDebug(window);
+		kierownik_Wiezy.RysujDebug(window);
         window.display();
     }
 	return 0;

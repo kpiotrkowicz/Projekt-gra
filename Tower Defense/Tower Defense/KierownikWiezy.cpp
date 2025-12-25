@@ -1,6 +1,8 @@
 #include "KierownikWiezy.h"
 #include <iostream>
 #include <functional>
+#include <list>
+#include <string>
 #include <algorithm>//zebysmy mogli usuwac pociski z wektora
 using namespace std;
 
@@ -19,39 +21,55 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 	}
 
 	// Aktualizacja wszystkichh pociskow
-	for (auto& pocisk_obiekt : pociski) {
+	for (auto it = pociski.begin(); it != pociski.end();) {
 		// Znajdz pozycje celu pocisku
-		if (pocisk_obiekt->CzyZywy()) {
-			sf::Vector2f pozycjaCelu;
-			bool cel_znaleziony = false;
 
-			//szuka pozycji celu w liscie celow
-			for (const auto& cel : cele) {
-				if (cel.id == pocisk_obiekt->PobierzIdCelu()) {
-					pozycjaCelu = cel.pozycja;
-					cel_znaleziony = true;
-					break;
-				}
-			}
+		sf::Vector2f pozycjaCelu;
+		bool cel_znaleziony = false;
 
-			if (cel_znaleziony) {
-				pocisk_obiekt->Aktualizuj(czasDelta, pozycjaCelu);
-			}
-			else {
-				// Cel nie istnieje, pocisk powinien zniknac
-				pocisk_obiekt->czy_zywy = false;
+		//szuka pozycji celu na liscie naszych celow
+		for (const auto& cel : cele) {
+			if (cel.id == (*it)->PobierzIdCelu()) {
+				pozycjaCelu = cel.pozycja;
+				cel_znaleziony = true;
+				break;
 			}
 		}
+		if (cel_znaleziony) {
+			(*it)->Aktualizuj(czasDelta, pozycjaCelu);
+			if (!(*it)->CzyZywy()) {
+				PrzyznajObrazenia((*it)->PobierzIdCelu(), (*it)->PobierzObrazenia());
+				it = pociski.erase(it); // Usun pocisk jesli nie zywy
+			}
+			else {
+				++it;
+			}
+		}
+		else {
+			it = pociski.erase(it); // Usun pocisk jesli cel nie znaleziony
+		}
 	}
+}
+
 
 	//zwalniamiy pamiec i usuwamy niepotrzebne pociski
-	pociski.erase(remove_if(pociski.begin(), pociski.end(),
+	/*pociski.erase(remove_if(pociski.begin(), pociski.end(),
 		[](const unique_ptr<pocisk>& p) { return !p->CzyZywy(); }),
 		pociski.end());//tymczasowa zmienna p to kazdy pocisk z wektora pociski jesli p nie zywy to usuwamy go z wektora
 
-}
+}*/
 
-void KierownikWiezy::zasiegDebug(sf::RenderWindow& window) {
+
+	// Funkcja callback do przyznawania obrazen gdy pocisk trafia w cel
+	
+	void KierownikWiezy::PrzyznajObrazenia(int celId, float ilosc) {
+		if (zewnetrznyCallbackObrazen) {
+			zewnetrznyCallbackObrazen(celId, ilosc);
+		}
+	}
+
+
+void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 	// Rysuj zasieg wszystkich wiez 
 	for (auto& wieza_obiekt : wieze) {
 		wieza_obiekt.zasiegDebug(window);
@@ -64,12 +82,8 @@ void KierownikWiezy::zasiegDebug(sf::RenderWindow& window) {
 
 void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 	// Tworzenie callbackow
-	FZwrotnaObrazen callbackObrazen = [this](int celId, float ilosc) {
-		PrzyznajObrazenia(celId, ilosc);
-	};
-	FUtworzPocisk callbackPocisk = [this](int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
-		UtworzPocisk(wiezaId, celId, pozycjaStartowa, obrazenia);
-	};
+	FZwrotnaObrazen callbackObrazen = bind(&KierownikWiezy::PrzyznajObrazenia, this, placeholders::_1, placeholders::_2);
+	FUtworzPocisk callbackPocisk = bind(&KierownikWiezy::UtworzPocisk, this, placeholders::_1, placeholders::_2, placeholders::_3, placeholders::_4);
 	float zasieg=150.0f;
 	float obrazenia=10.0f;
 	float czasOdnowienia=1.5f;
@@ -81,11 +95,8 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 		callbackObrazen, callbackPocisk);
 }
 
-// Funkcja callback do przyznawania obrazen gdy pocisk trafia w cel
-void KierownikWiezy::PrzyznajObrazenia(int celId, float ilosc) {
-	// Tutaj mozna dodac logike przyznawania obrazen celowi o danym ID
-	cout << "Cel o ID: " << celId << " otrzymal " << ilosc << " obrazen.\n" << endl;
-}
+
+
 
 void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
 	// Tworzenie callbacku do przyznawania obrazen
@@ -99,4 +110,16 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 		pozycjaStartowa,
 		obrazenia,
 		callbackObrazen));
+}
+
+bool KierownikWiezy::UlepszWieze(int id_wiezy) {
+	// Znajdz wieze o danym ID i ulepsz jej parametry
+	for (auto& wieza_obiekt : wieze) {
+		if (wieza_obiekt.PobierzId() == id_wiezy) {
+			// Przykadowe ulepszenie: zwiekszenie zasiegu i obrazen
+			return wieza_obiekt.Ulepsz();
+		}
+	}
+	cout << "Wieza o ID: " << id_wiezy << " nie znaleziona.\n" << endl;
+	return false; // Nie znaleziono wiezy o podanym ID
 }
