@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+
 class Enemy {
 public:
     // Inicjalizacja przeciwnika z okreœlon¹ œcie¿k¹, prêdkoœci¹, punktami ¿ycia i tekstur¹

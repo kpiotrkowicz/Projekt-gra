@@ -2,6 +2,11 @@
 #include "Enemy.h"
 #include <list>
 
+struct WaveConfig //struktura odpowiada za mieszanie potworow w fali
+{
+    std::vector<int> kolejnoscEnemies; // w jakiej kolejnosci vbeda tworzone potwory - np.{0,0,1,0,0,1}    
+    float delay;
+};
 class EnemyManager {
 public:
     EnemyManager();
@@ -13,7 +18,7 @@ public:
     void spawnEnemy(int type = 0);
 
     // Konfiguracja parametrów nowej fali (liczba wrogów, odstêp czasowy, typ)
-    void startWave(int count, float delay, int type);
+    void startWave(const WaveConfig& config);
 
     // Sprawdzenie, czy na mapie znajduj¹ siê przeciwnicy lub czy trwa proces spawnowania
     bool isWaveActive() const;
@@ -24,7 +29,10 @@ public:
     // Rysowanie wszystkich ¿ywych przeciwników
     void draw(sf::RenderWindow& window);
 
+
 private:
+    std::vector<int> spawnQueue; // Kolejka typów do spawnowania w obecnej fali
+	WaveConfig currentWave;      // Bie¿¹ca konfiguracja fali
     std::list<Enemy> enemies;       // Lista przechowuj¹ca aktywnych przeciwników
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
 
@@ -37,5 +45,5 @@ private:
     // Przechowywanie zasobów tekstur w pamiêci managera
     sf::Texture texStandard;
     sf::Texture tex2;
-    sf::Texture tex3;
+    sf::Texture tank;
 };

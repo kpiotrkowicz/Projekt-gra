@@ -3,10 +3,19 @@
 
 EnemyManager::EnemyManager() {
     // £adowanie tekstur z plików 
-    if (!texStandard.loadFromFile("../assets/enemy/w1.png")) { /* do ob³sugi b³êdu */ }
+    if (!texStandard.loadFromFile("../assets/enemy/w1.png")) { /* na koncu  do zrobienia obluga bledu bo program sie wykrzacza sam jak jest cos zle */ }
     if (!tex2.loadFromFile("../assets/enemy/w2.png")) { /* do ob³sugi b³êdu */ }
-    if (!tex3.loadFromFile("../assets/enemy/w3.png")) { /* do ob³sugi b³êdu */ }
+    if (!tank.loadFromFile("../assets/enemy/w3.png")) {}
 }
+
+//Jak ta oblsuga nie bedzie dzialac to mozna optymistycznie zalozyc ze pliki sa zawsze dostepne 
+/*
+EnemyManager::EnemyManager() {
+   texStandard.loadFromFile("../assets/enemy/w1.png");
+   tex2.loadFromFile("../assets/enemy/w2.png");
+   tank.loadFromFile("../assets/enemy/w3.png");
+}*/
+
 
 void EnemyManager::setPath(const std::vector<sf::Vector2f>& p) {
     path = p;
@@ -15,12 +24,12 @@ void EnemyManager::setPath(const std::vector<sf::Vector2f>& p) {
 void EnemyManager::spawnEnemy(int type) {
     if (path.empty()) return;
 
-    // Definiowanie domyœlnych statystyk
+    // Definiowanie domyœlnych statystyk przeciwnika
     float speed = 80.f;
     int hp = 100;
     sf::Texture* selectedTexture = &texStandard;
 
-    // parametry na podstawie typu przeciwnika
+    // parametry przeciwnikow
     switch (type) {
     case 1: // Typ 1
         speed = 150.f;
@@ -30,7 +39,7 @@ void EnemyManager::spawnEnemy(int type) {
     case 2: // Typ2 
         speed = 40.f;
         hp = 300;
-        selectedTexture = &tex3;
+        selectedTexture = &tank;
         break;
     }
 
@@ -39,27 +48,31 @@ void EnemyManager::spawnEnemy(int type) {
 
     // Informacje o utworzonej jednostce w konsoli
     std::cout << "[SPAWN] Typ: " << type << " HP: " << hp << " Speed: " << speed << std::endl;
-}
+}   
 
-void EnemyManager::startWave(int count, float delay, int type) {
-    enemiesToSpawn = count;
-    spawnDelay = delay;
-    spawnTimer = delay; // Ustawienie licznika na wartoœæ opóŸnienia, aby pierwszy spawn by³ natychmiastowy
-    waveEnemyType = type;
+void EnemyManager::startWave(const WaveConfig& config) {
+    
+    spawnDelay = config.delay;
+    spawnTimer = config.delay; // Ustawienie licznika na wartoœæ opóŸnienia, aby pierwszy spawn by³ natychmiastowy
+    spawnQueue = config.kolejnoscEnemies;
 }
 
 bool EnemyManager::isWaveActive() const {
     // Fala jest aktywna, gdy lista wrogów nie jest pusta lub pozosta³y jednostki do stworzenia
-    return !enemies.empty() || enemiesToSpawn > 0;
+    return !enemies.empty() || !spawnQueue.empty();
 }
 
 void EnemyManager::update(float dt) {
     // Obs³uga licznika spawnowania kolejnych jednostek w fali
-    if (enemiesToSpawn > 0) {
+    if (!spawnQueue.empty()) {
         spawnTimer += dt;
         if (spawnTimer >= spawnDelay) {
-            spawnEnemy(waveEnemyType);
-            enemiesToSpawn--;
+            // Wyci¹gamy typ z pocz¹tku wektora
+            int typeToSpawn = spawnQueue.front();
+            spawnEnemy(typeToSpawn);
+
+            // Usuwamy ten typ z kolejki
+            spawnQueue.erase(spawnQueue.begin());
             spawnTimer = 0.0f;
         }
     }

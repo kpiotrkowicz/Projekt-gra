@@ -2,6 +2,11 @@
 #include <queue>
 #include <iostream>
 
+/* Jak to działa?
+   Funkcja wczytuje współrzędne ścieżki z pliku tekstowego,
+   pary liczb reprezentują punkty na ścieżce
+*/
+
 std::vector<sf::Vector2f> PathLoader::loadPath(std::string filename) {
     std::vector<sf::Vector2f> path;
     std::ifstream file(filename);
