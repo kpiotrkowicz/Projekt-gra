@@ -7,6 +7,8 @@ struct WaveConfig //struktura odpowiada za mieszanie potworow w fali
     std::vector<int> kolejnoscEnemies; // w jakiej kolejnosci vbeda tworzone potwory - np.{0,0,1,0,0,1}    
     float delay;
 };
+
+
 class EnemyManager {
 public:
     EnemyManager();
@@ -29,12 +31,26 @@ public:
     // Rysowanie wszystkich ¿ywych przeciwników
     void draw(sf::RenderWindow& window);
 
+    //ile pieniedzy ma gracz
+    int getPlayerMoney() const { return playerMoney; }
+
+	//koniec gry gdy zycie spadnie do zera
+	bool gameOver() const { return playerHealth <= 0; }
+    
+
+
+    //do testu to klikanie myszy
+    void MouseClick(sf::Vector2f mousePos);
 
 private:
     std::vector<int> spawnQueue; // Kolejka typów do spawnowania w obecnej fali
 	WaveConfig currentWave;      // Bie¿¹ca konfiguracja fali
     std::list<Enemy> enemies;       // Lista przechowuj¹ca aktywnych przeciwników
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
+
+	// Zasoby gry
+	int playerMoney = 100; //pieniadze gracza
+	int playerHealth = 1; //zycie gracza
 
     // Zmienne steruj¹ce mechanik¹ fal
     int waveEnemyType = 0;

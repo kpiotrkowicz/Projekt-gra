@@ -27,6 +27,8 @@ void EnemyManager::spawnEnemy(int type) {
     // Definiowanie domyœlnych statystyk przeciwnika
     float speed = 80.f;
     int hp = 100;
+    int reward = 10;
+    int demage = 1;
     sf::Texture* selectedTexture = &texStandard;
 
     // parametry przeciwnikow
@@ -34,17 +36,21 @@ void EnemyManager::spawnEnemy(int type) {
     case 1: // Typ 1
         speed = 150.f;
         hp = 50;
+        reward = 20;
         selectedTexture = &tex2;
+        demage = 1;
         break;
     case 2: // Typ2 
         speed = 40.f;
         hp = 300;
+        reward = 30;
         selectedTexture = &tank;
+        demage = 2;
         break;
     }
 
     // Dodanie nowego przeciwnika do listy aktywnych obiektów
-    enemies.emplace_back(path, speed, hp, *selectedTexture);
+    enemies.emplace_back(path, speed, hp, *selectedTexture, reward, demage);
 
     // Informacje o utworzonej jednostce w konsoli
     std::cout << "[SPAWN] Typ: " << type << " HP: " << hp << " Speed: " << speed << std::endl;
@@ -58,8 +64,8 @@ void EnemyManager::startWave(const WaveConfig& config) {
 }
 
 bool EnemyManager::isWaveActive() const {
-    // Fala jest aktywna, gdy lista wrogów nie jest pusta lub pozosta³y jednostki do stworzenia
-    return !enemies.empty() || !spawnQueue.empty();
+	// Fala jest aktywna, gdy lista wrogów nie jest pusta lub pozosta³y jednostki do stworzenia i gracz ma jeszcze ¿ycie
+    return !enemies.empty() || !spawnQueue.empty() || playerHealth < 0;
 }
 
 void EnemyManager::update(float dt) {
@@ -88,19 +94,32 @@ void EnemyManager::update(float dt) {
     }
 
     // Pêtla aktualizuj¹ca stan ka¿dego przeciwnika oraz usuwaj¹ca jednostki nieaktywne
-    for (auto it = enemies.begin(); it != enemies.end();) {
-        it->update(dt);
-
-        if (it->isDead()) {
+    for (auto przeciwnik = enemies.begin(); przeciwnik != enemies.end();) {
+        przeciwnik->update(dt);
+  
+        if (przeciwnik->isDead()) {
+			//gracz dostaje pieniadze za zabicie potwora
+			playerMoney += przeciwnik->getReward();
+            
+            std::cout << "[KASA] przeciwnik byl wart: "<< przeciwnik->getReward() << std::endl;
+            std::cout << "[PORTFEL] pieniadze gracza: " << playerMoney << std::endl;
             std::cout << "[INFO] Potwor zginal!" << std::endl;
-            it = enemies.erase(it);
+            przeciwnik = enemies.erase(przeciwnik);
+            
         }
-        else if (it->reachedEnd()) {
+        else if (przeciwnik->reachedEnd()) {
+			playerHealth -= przeciwnik->getDemage();
+            std::cout << "[ZYCIE] zycie gracza: " << playerHealth << std::endl;
             std::cout << "[INFO] Potwor uciekl!" << std::endl;
-            it = enemies.erase(it);
+            przeciwnik = enemies.erase(przeciwnik);
+
+
+            if(playerHealth <= 0) {
+                std::cout << "[GAME OVER] Zycie gracza spadlo do zera!" << std::endl;
+			}
         }
         else {
-            ++it;
+            ++przeciwnik;
         }
     }
 }
@@ -108,4 +127,18 @@ void EnemyManager::update(float dt) {
 void EnemyManager::draw(sf::RenderWindow& window) {
     // Renderowanie wszystkich obiektów z listy enemies
     for (auto& e : enemies) e.draw(window);
+}
+
+
+
+void EnemyManager::MouseClick(sf::Vector2f mousePos) {
+    for (auto& enemy : enemies) {
+        if (enemy.isClicked(mousePos)) {
+            enemy.takeDamage(50); //50 obrazen przy klikniêciu
+            std::cout << "[HIT] Potwor oberwal! Pozostalo HP: " << enemy.getHp() << std::endl;
+
+            //aby jedno klikniêcie trafia jednego wroga
+            break;
+        }
+    }
 }

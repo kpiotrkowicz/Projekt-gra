@@ -1,5 +1,8 @@
-//srawdzic poprawnosc i napisac kometarze 
+//      !!!
 //
+//enemymanager.cpp -> statysyki przeciwnika
+//ememymanager.h -> zycie i kasa gracza
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "EnemyManager.h"
@@ -19,10 +22,15 @@ int main()
     std::vector<sf::Vector2f> path = PathLoader::loadPath("../assets/maps/map1.txt");
     manager.setPath(path);
 
-    // Za³adowanie t³a mapy
+	// Za³adowanie t³a mapy i tla konca gry
     sf::Texture tex;
     if (!tex.loadFromFile("../assets/path.png")) { /* obs³uga b³êdu braku pliku */ }
     sf::Sprite sprite(tex);
+
+    sf::Texture gameOverTex;
+	if (!gameOverTex.loadFromFile("../assets/koniec.png")) { /* obs³uga b³êdu braku pliku */ }
+	sf::Sprite gameOverSprite(gameOverTex);
+   
 
     sf::Clock clock;
     int currentWave = 0;
@@ -35,39 +43,59 @@ int main()
         // Obs³uga zdarzeñ systemowych (zamkniêcie okna, sterowanie)
         while (window.pollEvent(e))
         {
+
+            //do testu, zadanie obrazen przyciskiem myszy
+            //tu bedzie zmiana na wieze
+            if (e.type == sf::Event::MouseButtonPressed) {
+                if (e.mouseButton.button == sf::Mouse::Left) {
+                    //pozycja myszy wzglêdem okna
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+
+                    //funkcja zadawania obra¿eñ
+                    manager.MouseClick(worldPos);
+                }
+            }
             if (e.type == sf::Event::Closed)
                 window.close();
 
-            // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
-            if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space) {
-                if (!manager.isWaveActive()) {
-                    currentWave++;
 
-                    //ustawienia sa zalezne od fali
-                    WaveConfig settings = getWaveSettings(currentWave);
-                    manager.startWave(settings);
+            if (!manager.gameOver()) {
+                // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
+                if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Space) {
+                    if (!manager.isWaveActive()) {
+                        currentWave++;
 
-                    // Wyœwietlenie informacji o nowej rundzie w konsoli
-                    std::system("cls");
-                    std::cout << "===========================" << std::endl;
-                    std::cout << "RUNDA: " << currentWave << std::endl;
-                    std::cout << "===========================" << std::endl;
+                        //ustawienia sa zalezne od fali
+                        WaveConfig settings = getWaveSettings(currentWave);
+                        manager.startWave(settings);
+
+                        // Wyœwietlenie informacji o nowej rundzie w konsoli
+                        std::system("cls");
+                        std::cout << "===========================" << std::endl;
+                        std::cout << "RUNDA: " << currentWave << std::endl;
+                        std::cout << "===========================" << std::endl;
+                    }                
                 }
-            }
+            }            
         }
 
         // Do aktualizacji gry
         float dt = clock.restart().asSeconds();
 
         // Aktualizacja gry gdy aplikacja nie jest zatrzymana
-        if (!gamePaused) {
+        if (!gamePaused && !manager.gameOver()) {
             manager.update(dt);
         }
 
         // Rysowanie sceny
         window.clear();
         window.draw(sprite);   // Wyœwietlenie t³a
-        manager.draw(window); 
+        manager.draw(window);
+        if (manager.gameOver()) { 
+			window.clear(); //usuwanie tla i potworow
+            window.draw(gameOverSprite); // Wyœwietlenie ekranu koñca gry
+        } 
         window.display();
     }
 
