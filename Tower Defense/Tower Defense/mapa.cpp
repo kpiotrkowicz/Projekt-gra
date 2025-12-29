@@ -8,7 +8,7 @@ bool mapaZaladowana = false;
 
 // Ladowanie mapy 
 void loadMapa() {
-    if (!mapaTexture.loadFromFile("..Assets/maps/mapka.png")) {
+    if (!mapaTexture.loadFromFile("../Assets/maps/mapka.png")) {
         std::cout << "BLAD: Nie mozna zaladowac mapy!\n";
         return;
     }

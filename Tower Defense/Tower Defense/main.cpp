@@ -2,7 +2,7 @@
 #include "mapa.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
+    sf::RenderWindow window(sf::VideoMode(1024, 1536), "SFML dzia³a!");
     loadMapa();// laduje mape
     while (window.isOpen()) {
         sf::Event event;
