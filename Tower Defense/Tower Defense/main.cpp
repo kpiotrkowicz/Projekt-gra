@@ -1,8 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include "mapa.h"
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
-
+    loadMapa();// laduje mape
     while (window.isOpen()) {
         sf::Event event;
 
@@ -12,6 +13,7 @@ int main() {
         }
 
         window.clear(sf::Color::Black);
+        renderMapa(window); //rysuje mape
         window.display();
     }
 
