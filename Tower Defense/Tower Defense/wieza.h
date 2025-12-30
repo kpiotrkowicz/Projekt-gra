@@ -16,7 +16,7 @@ class wieza {
 	public:
 	// Konstruktor wiezy
 	wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float czasOdnowienia,
-		FZwrotnaObrazen callback, FUtworzPocisk callbackPocisk);
+		FZwrotnaObrazen callback, FUtworzPocisk callbackPocisk,string typ);
 	// Aktualizacja wiezy (wywolywana w kazdej klatce gry)
 	void Aktualizuj(float czasDelta, const vector<Cel>& potencjalneCele);
 	int PobierzId() const { return id; } // Pobierz unikalne ID wiezy
@@ -35,6 +35,9 @@ private:
 	int poziom;
 	int id; // Unikalne ID wiezy
 	sf::Vector2f pozycja; // Pozycja wiezy
+	sf::Texture tekstura;
+	sf::Sprite sprite;
+	string typ;
 
 	float zasieg; // Zasieg wiezy
 	float obrazenia; // Obrazenia zadawane przez wieze

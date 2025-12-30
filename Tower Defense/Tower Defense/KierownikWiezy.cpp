@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>//zebysmy mogli usuwac pociski z wektora
 using namespace std;
+using namespace std::placeholders;
 
 KierownikWiezy::KierownikWiezy(FZwrotnaObrazen zewnetrznyCallbackObrazen)
 	: zewnetrznyCallbackObrazen(zewnetrznyCallbackObrazen) {
@@ -22,31 +23,28 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 
 	// Aktualizacja wszystkichh pociskow
 	for (auto it = pociski.begin(); it != pociski.end();) {
+		int id_celu = (*it)->PobierzIdCelu();
+		auto cel_it = find_if(cele.begin(), cele.end(),
+			[id_celu](const Cel& cel) 
+			{ return cel.id == id_celu; });
 		// Znajdz pozycje celu pocisku
 
 		sf::Vector2f pozycjaCelu;
-		bool cel_znaleziony = false;
-
-		//szuka pozycji celu na liscie naszych celow
-		for (const auto& cel : cele) {
-			if (cel.id == (*it)->PobierzIdCelu()) {
-				pozycjaCelu = cel.pozycja;
-				cel_znaleziony = true;
-				break;
-			}
-		}
-		if (cel_znaleziony) {
-			(*it)->Aktualizuj(czasDelta, pozycjaCelu);
-			if (!(*it)->CzyZywy()) {
-				PrzyznajObrazenia((*it)->PobierzIdCelu(), (*it)->PobierzObrazenia());
-				it = pociski.erase(it); // Usun pocisk jesli nie zywy
-			}
-			else {
-				++it;
-			}
+		if (cel_it != cele.end()) {
+			pozycjaCelu = cel_it->pozycja;
 		}
 		else {
-			it = pociski.erase(it); // Usun pocisk jesli cel nie znaleziony
+			// Cel nie istnieje, usun pocisk
+			it = pociski.erase(it);
+			continue;
+		}
+
+		(*it)->Aktualizuj(czasDelta, pozycjaCelu);
+		if (!(*it)->CzyZywy()) {
+		it=pociski.erase(it); // Usun pocisk jesli nie zywy
+		}
+		else {
+			++it;
 		}
 	}
 }
@@ -80,7 +78,7 @@ void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 	}
 }
 
-void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
+/*void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 	// Tworzenie callbackow
 	FZwrotnaObrazen callbackObrazen = bind(&KierownikWiezy::PrzyznajObrazenia, this, placeholders::_1, placeholders::_2);
 	FUtworzPocisk callbackPocisk = bind(&KierownikWiezy::UtworzPocisk, this, placeholders::_1, placeholders::_2, placeholders::_3, placeholders::_4);
@@ -94,8 +92,37 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 		obrazenia, czasOdnowienia,
 		callbackObrazen, callbackPocisk);
 }
+*/
+void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
+	float zasieg=150.0f
+		;
+	float obrazenia = 10.0f;
+	float czasOdnowienia = 1.5f;
 
-
+	if (typ == "tower_1") {//wieza lucznikow ta slomiana 
+		zasieg = 220.0f;
+		obrazenia = 12.0f;
+		czasOdnowienia = 0.6f;
+	}
+	if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
+		zasieg = 160.0f;
+		obrazenia = 35.0f;
+		czasOdnowienia = 1.8f;
+	}
+	if (typ == "tower_3") {//wieza lodowa- krysztalowa
+		zasieg = 140.0f;
+		obrazenia = 20.0f;
+		czasOdnowienia = 1.2f;
+	}
+	if (typ == "tower_4") {//wieza magzczna zlota
+		zasieg = 190.0f;
+		obrazenia = 50.0f;
+		czasOdnowienia = 2.5f;
+	}
+	wieze.emplace_back(nastepneIdWiezy++,
+		pozycja, zasieg,
+		obrazenia, czasOdnowienia, zewnetrznyCallbackObrazen, bind(&KierownikWiezy::UtworzPocisk, this, _1,_2,_3,_4),typ);
+}
 
 
 void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {

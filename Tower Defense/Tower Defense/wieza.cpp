@@ -9,13 +9,23 @@ using namespace std;
 // Konstruktor wiezy
 //:: operator zakresla, ze funkcja nalezy do klasy
 //:id(id) - inicjalizacja pola id klasy wieza wartoscia id przekazana do konstruktora
-wieza:: wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float czasOdnowienia, FZwrotnaObrazen callback, FUtworzPocisk callbackPocisk)
+wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float czasOdnowienia, FZwrotnaObrazen callback, FUtworzPocisk callbackPocisk, string typ)
 	: id(id), pozycja(pozycja), zasieg(zasieg), obrazenia(obrazenia), czasOdnowienia(czasOdnowienia),
-	  czasOdOstatniegoStrzalu(0.0f), aktualnyCelId(-1),
-	  przyznajObrazeniaCallback(callback),
-	  utworzPociskCallback(callbackPocisk),
-	  typTargetowania("najblizszy")// Domyslny typ targetowania
+	czasOdOstatniegoStrzalu(0.0f), aktualnyCelId(-1),
+	przyznajObrazeniaCallback(callback),
+	utworzPociskCallback(callbackPocisk),
+	typTargetowania("najblizszy"),// Domyslny typ targetowania
+	poziom(1),typ(typ)
 {
+	if (tekstura.loadFromFile(typ+".png")) {
+		sprite.setTexture(tekstura);
+		sf::FloatRect b = sprite.getLocalBounds();
+		sprite.setOrigin(b.width / 2.f, b.height / 2.f);
+		sprite.setPosition(pozycja);
+		//skalujemy do rozmiaru ktory chcemy
+		float skala = 80.f / b.width; // Przyk³adowa skala
+		sprite.setScale(skala, skala);
+	}
 	cout << "Wieza utworzona o ID: " << id << " na pozycji (" << pozycja.x << ", " << pozycja.y << ")\n"<<endl;
 }
 //Aktualizacja wiezy wywolywana w kazdej klatce gry przez kierownika wie¿y
@@ -46,10 +56,39 @@ void wieza::ZnajdzCel(const vector<Cel>& potencjalneCele)
 {
 
 	aktualnyCelId = -1;// Domyslnie brak celu
-	float najblizszyDystansKw = numeric_limits<float>::max(); // tu uzywamy tego limits - Inicjalizacja na maksymalna wartosc float
+	//float najblizszyDystansKw = numeric_limits<float>::max(); // tu uzywamy tego limits - Inicjalizacja na maksymalna wartosc float
 	float zasiegkw = zasieg * zasieg; // Porownujemy kwadraty dystansow, aby uniknac sqrt
-
-	for (const auto& cel : potencjalneCele)
+	if (typTargetowania == "najblizszy") {
+		float najblizszyDystansKw = numeric_limits<float>::max(); // tu uzywamy tego limits - Inicjalizacja na maksymalna wartosc float
+		for (const auto& cel : potencjalneCele)
+		{
+			// Oblicz dystans do celu 
+			float dx = cel.pozycja.x - pozycja.x;
+			float dy = cel.pozycja.y - pozycja.y;
+			float dystanskw = dx * dx + dy * dy;
+			// Sprawdz czy cel jest w zasiegu
+			if (dystanskw <= zasiegkw && dystanskw < najblizszyDystansKw) {
+				najblizszyDystansKw = dystanskw;
+				aktualnyCelId = cel.id;
+			}
+		}
+	}
+	else if (typTargetowania == "najsilniejszy") {
+		float maxZdrowie = -1.0f; // dodanie minimalnej wartosci
+		for (const auto& cel : potencjalneCele)
+		{
+			// Oblicz dystans do celu 
+			float dx = cel.pozycja.x - pozycja.x;
+			float dy = cel.pozycja.y - pozycja.y;
+			// Sprawdz czy cel jest w zasiegu
+			if (dx * dx + dy * dy <= zasiegkw && cel.zdrowie > maxZdrowie) {
+				maxZdrowie = cel.zdrowie;
+				aktualnyCelId = cel.id;
+			}
+		}
+	}
+}
+	/*for (const auto& cel : potencjalneCele)
 	{
 		// Oblicz dystans do celu 
 		float dx = cel.pozycja.x - pozycja.x;
@@ -63,8 +102,8 @@ void wieza::ZnajdzCel(const vector<Cel>& potencjalneCele)
 		}
 
 
-	}
-}
+	}*/
+
 
 //jak strzelac - wywolujemy callback do tworzenia pocisku
 
@@ -89,12 +128,7 @@ void wieza::zasiegDebug(sf::RenderWindow& window)
 	okrag.setPosition(pozycja); // Ustawienie pozycji na srodek wiezy
 	window.draw(okrag);
 
-	//rysunek samej wiezy
-	sf::RectangleShape wiezaksztalt({ 20.0f,40.0f });
-	wiezaksztalt.setOrigin(10.0f, 20.0f); // Srodek wiezy
-	wiezaksztalt.setPosition(pozycja);
-	wiezaksztalt.setFillColor(sf::Color::Green);
-	window.draw(wiezaksztalt);
+	window.draw(sprite);
 }
 
 bool wieza::Ulepsz()

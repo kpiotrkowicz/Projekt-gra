@@ -62,8 +62,8 @@ int main() {
 
 
     //stawiam pare wiez testowych(pozycja,typ)
-    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "Lucznik");
-    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "Armata");
+    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
 
 
     //testowa lista ceklow
@@ -78,8 +78,21 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-        }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::S) {
+                    for (int i = 0; i < 30; i++) {
+                        int id = 100 + i;
+                        mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
+                    }
+                    cout << "STRES test dodano 30 celow" << endl;
+                }
 
+                if (event.key.code == sf::Keyboard::D) {
+                    kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+                }
+            }
+        }
+    
      
    //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki
 		float czasDelta = zegar.restart().asSeconds();
@@ -96,7 +109,7 @@ int main() {
 
         window.clear(sf::Color(20,20,30));
             
-		//kierownik_Wiezy.DodajWieze(window);// rysowanie wiez
+		
 
 		// Rysowanie  pociskow (debug)
 		for(const auto& para : mapa_wrogow) {
