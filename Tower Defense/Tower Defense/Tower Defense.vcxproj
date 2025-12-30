@@ -132,6 +132,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="forge.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="main.cpp" />
@@ -141,6 +143,12 @@
     <ClInclude Include="forge.h" />
     <ClInclude Include="mapa.h" />
     <ClInclude Include="hud.h" />
+    <ClCompile Include="PathLoeader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="PathLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
