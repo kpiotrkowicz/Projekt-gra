@@ -12,8 +12,6 @@ int main() {
                 window.close();
         }
 
-        window.clear(sf::Color::Black);
-        renderMapa(window); //rysuje mape
         window.display();
     }
 
