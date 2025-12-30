@@ -18,6 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Enemy.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -25,10 +26,20 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="PathLoeader.cpp">
+=======
+    <ClCompile Include="mapa.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="forge.cpp">
+>>>>>>> programista_3
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClInclude Include="Enemy.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -37,6 +48,16 @@
     </ClInclude>
     <ClInclude Include="PathLoader.h">
       <Filter>Pliki nagłówkowe</Filter>
+=======
+    <ClInclude Include="mapa.h">
+      <Filter>Pliki źródłowe</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Pliki źródłowe</Filter>
+    </ClInclude>
+    <ClInclude Include="forge.h">
+      <Filter>Pliki źródłowe</Filter>
+>>>>>>> programista_3
     </ClInclude>
   </ItemGroup>
 </Project>
