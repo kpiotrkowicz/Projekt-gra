@@ -60,16 +60,16 @@ WaveConfig getWaveSettings(int); //funkcja do ustawiania poziomu fal (napisana n
     EnemyManager manager;
 
     // Wczytanie wspolrzedych mapy i przekazanie ich do managera
-    std::vector<sf::Vector2f> path = PathLoader::loadPath("../Assets/maps/map1.txt");
+    std::vector<sf::Vector2f> path = PathLoader::loadPath("../assets/maps/map1.txt");
     manager.setPath(path);
 
 	// Za³adowanie t³a mapy i tla konca gry
     sf::Texture tex;
-    if (!tex.loadFromFile("../Assets/path.png")) { /* obs³uga b³êdu braku pliku */ }
+    if (!tex.loadFromFile("../assets/path.png")) { /* obs³uga b³êdu braku pliku */ }
     sf::Sprite sprite(tex);
 
     sf::Texture gameOverTex;
-	if (!gameOverTex.loadFromFile("../Assets/koniec.png")) { /* obs³uga b³êdu braku pliku */ }
+	if (!gameOverTex.loadFromFile("../assets/koniec.png")) { /* obs³uga b³êdu braku pliku */ }
 	sf::Sprite gameOverSprite(gameOverTex);
    
 
