@@ -1,4 +1,15 @@
 #include <SFML/Graphics.hpp>
+#include "KierownikWiezy.h"
+#include <functional>//dla funtion
+#include "zabojcacelow.h"
+#include "interfejs.h"
+#include <map>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+//funkcje do sceny testowej 
+map<int, ZabojcaCelow> mapa_wrogow;
 #include <iostream>
 #include <vector>
 #include "EnemyManager.h"
@@ -6,6 +17,43 @@
 #include "mapa.h"
 #include "hud.h"
 #include "forge.h"
+
+//funkcja ktora wywola kierownik wiezy gdy pocisk trafi w cel
+static void PrzyznajObrazenia(int celId, float ilosobrazen) {
+    auto it = mapa_wrogow.find(celId);
+    if (it != mapa_wrogow.end()) {
+        it->second.obrazeniacelu(ilosobrazen);
+      //usuwamy w usunpokonanecele
+    }
+    else {
+        cout << "Cel o ID: " << celId << " nie istnieje!" << endl;
+    }
+};
+
+//tworzenie celow - funkcja wywolywana przez wieze przy strzale
+static vector<Cel>StworzListeCelow() {
+vector<Cel>lista_celow;
+for (const auto& para : mapa_wrogow) {//iteracja po mapie
+    if (para.second.zycie > 0.0f) {
+        lista_celow.push_back({ 
+            
+            para.second.id, 
+            para.second.pozycja });
+    }
+}return lista_celow;
+};
+
+static void usunpokonanecele() {
+    for (auto it = mapa_wrogow.begin(); it != mapa_wrogow.end();) {
+        if (it->second.zycie <= 0.0f) {
+            it = mapa_wrogow.erase(it); // Usun cel z mapy, jesli zostal zniszczony
+        }
+        else {
+            ++it;
+        }
+
+    }
+};
 
 // !!!
 //
@@ -52,6 +100,28 @@ int main() {
     int currentWave = 0;
     bool graStart = false; //zmienna sprawdzajaca czy gra zostala ropoczeta
     bool gamePaused = false;
+    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
+	sf::Clock zegar;
+	
+	FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
+	//przekazanie callbacka do kierownika wiezy
+	KierownikWiezy kierownik_Wiezy(callbackObrazen);
+
+	mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
+	mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
+    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));
+
+
+    //stawiam pare wiez testowych(pozycja,typ)
+    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
+
+
+    //testowa lista ceklow
+    vector<Cel> cele;
+	cele.push_back({ 10, {150.f,150.f} });
+	cele.push_back({ 11, {400.f,300.f} });
+
 
     // G³ówna pêtla gry
     while (window.isOpen()) {
@@ -62,6 +132,20 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::S) {
+                    for (int i = 0; i < 30; i++) {
+                        int id = 100 + i;
+                        mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
+                    }
+                    cout << "STRES test dodano 30 celow" << endl;
+                }
+
+                if (event.key.code == sf::Keyboard::D) {
+                    kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+                }
+            }
+        }
 
             handleForgeEvent(event, manager); //obsluga kuzni
 
@@ -134,10 +218,40 @@ int main() {
             rysujForge(window, manager); //rysuje kuznie 
         }
 
+    
+     
+   //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki
+		float czasDelta = zegar.restart().asSeconds();
+
+		//zrobienie listy celow na podstawie mapy wrogow
+		vector<Cel> aktualna_lista_celow = StworzListeCelow();
+
+
+        //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
+		kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
+
+		//usuwamy pokonane cele z mapy
+		usunpokonanecele();
+
+        window.clear(sf::Color(20,20,30));
+            
+		
+
+		// Rysowanie  pociskow (debug)
+		for(const auto& para : mapa_wrogow) {
+            sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
+            ksztaltCelu.setOrigin(10.f, 10.f);
+            ksztaltCelu.setPosition(para.second.pozycja);
+            ksztaltCelu.setFillColor(sf::Color::Green);
+            window.draw(ksztaltCelu);
+        }
+		
+		kierownik_Wiezy.RysujDebug(window);
         window.display();
     }
+	return 0;
 
-    return 0;
+
 }
 
 WaveConfig getWaveSettings(int waveNumber) {//scenariusze fali
