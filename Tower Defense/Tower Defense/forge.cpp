@@ -73,15 +73,28 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 		}
 	}
 		//kupno wiezy
-		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
-			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
-				manager.moneySum( -cenaWiezy[wybranaWieza]);
-				//tu potem ma byc stawianie wiezy!!!!
-			}
-	}
-	}
+	if (event.type == sf::Event::MouseButtonPressed &&
+		event.mouseButton.button == sf::Mouse::Left)
+	{
+		sf::Vector2f mousePos(
+			static_cast<float>(event.mouseButton.x),
+			static_cast<float>(event.mouseButton.y)
+		);
 
-	void rysujForge(sf::RenderWindow& window, EnemyManager& manager){
+		// sprawdzamy, czy klikniêto NA WYBRAN¥ WIE¯Ê
+		if (towerSprite[wybranaWieza].getGlobalBounds().contains(mousePos)) {
+			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
+				manager.moneySum(-cenaWiezy[wybranaWieza]);
+
+				// TODO: tutaj póŸniej stawianie wie¿y na mapie
+			}
+		}
+	}
+	}
+	
+	
+
+void rysujForge(sf::RenderWindow& window, EnemyManager& manager){
 		if (!kuzniaWidoczna) return;
 
 		int aktualneZloto = manager.getPlayerMoney();
@@ -103,8 +116,7 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 
 			window.draw(towerSprite[i]);
 			window.draw(cenaTekst[i]);
-	
-			window.draw(towerSprite[i]);
+
 		}
 	
 	}
