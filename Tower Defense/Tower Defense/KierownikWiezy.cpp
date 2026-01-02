@@ -94,8 +94,7 @@ void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 }
 */
 void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
-	float zasieg=150.0f
-		;
+	float zasieg=150.0f;
 	float obrazenia = 10.0f;
 	float czasOdnowienia = 1.5f;
 

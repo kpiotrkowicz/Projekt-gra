@@ -6,75 +6,114 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
-using namespace std;
-
-//funkcje do sceny testowej 
-map<int, ZabojcaCelow> mapa_wrogow;
-#include <iostream>
 #include <vector>
 #include "EnemyManager.h"
 #include "PathLoader.h"
 #include "mapa.h"
 #include "hud.h"
 #include "forge.h"
-
-//funkcja ktora wywola kierownik wiezy gdy pocisk trafi w cel
-static void PrzyznajObrazenia(int celId, float ilosobrazen) {
-    auto it = mapa_wrogow.find(celId);
-    if (it != mapa_wrogow.end()) {
-        it->second.obrazeniacelu(ilosobrazen);
-      //usuwamy w usunpokonanecele
-    }
-    else {
-        cout << "Cel o ID: " << celId << " nie istnieje!" << endl;
-    }
-};
-
-//tworzenie celow - funkcja wywolywana przez wieze przy strzale
-static vector<Cel>StworzListeCelow() {
-vector<Cel>lista_celow;
-for (const auto& para : mapa_wrogow) {//iteracja po mapie
-    if (para.second.zycie > 0.0f) {
-        lista_celow.push_back({ 
-            
-            para.second.id, 
-            para.second.pozycja });
-    }
-}return lista_celow;
-};
-
-static void usunpokonanecele() {
-    for (auto it = mapa_wrogow.begin(); it != mapa_wrogow.end();) {
-        if (it->second.zycie <= 0.0f) {
-            it = mapa_wrogow.erase(it); // Usun cel z mapy, jesli zostal zniszczony
-        }
-        else {
-            ++it;
-        }
-
-    }
-};
-
 // !!!
 //
 //enemymanager.cpp -> statysyki przeciwnika
 //ememymanager.h -> zycie i kasa gracza
 
 
+//funkcje do sceny testowej 
+// niepotrzbne?
+//map<int, ZabojcaCelow> mapa_wrogow;
+
+
+//wskaznik globalny do kierownika wrogow aby bylo mozna z niego korzystac w callbacku
+EnemyManager* g_enemyManager = nullptr;
+
+//funkcja ktora wywola kierownik wiezy gdy pocisk trafi w cel
+static void PrzyznajObrazenia(int celId, float ilosobrazen) {
+    if (g_enemyManager) {
+		//funkcja znajduje sie w EmenyManager.cpp
+        g_enemyManager->damageEnemy(celId, ilosobrazen);
+    }
+    /*else {
+        std::cout << "Cel o ID: " << celId << " nie istnieje!" << endl;
+    }*/
+};
+
+//tworzenie celow - funkcja wywolywana przez wieze przy strzale
+static vector<Cel>StworzListeCelow(EnemyManager& manager) {
+    vector<Cel>lista_celow;
+
+	//tez jest to przezucone do EnemyManager.cpp
+
+    auto& wrogowie = manager.getActiveEnemies();
+    for (const auto& wrog : wrogowie) {
+        lista_celow.push_back({ wrog.getID(), wrog.getPosition() });
+    }
+
+    //for (const auto& para : mapa_wrogow) {//iteracja po mapie
+    //    if (para.second.zycie > 0.0f) {
+    //        lista_celow.push_back({
+
+    //            para.second.id,
+    //            para.second.pozycja });
+    //    }
+    //}
+    
+    
+    return lista_celow;
+};
+
+
+//funkcja niepotrzebna?
+// jezeli ptowor nie ma zycia to usuwamy go z mapy 
+//static void usunpokonanecele() {
+//    for (auto it = mapa_wrogow.begin(); it != mapa_wrogow.end();) {
+//        if (it->second.zycie <= 0.0f) {
+//            it = mapa_wrogow.erase(it); // Usun cel z mapy, jesli zostal zniszczony
+//        }
+//        else {
+//            ++it;
+//        }
+//
+//    }
+//};
+
+
+
 WaveConfig getWaveSettings(int waveNumber); //funkcja do ustawiania poziomu fal (napisana na dole)
 
 int main() {
-    // Konfiguracja okna wyœwietlania i limitu klatek na sekundê
-    sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense - SFML dzia³a!");
+    // Konfiguracja okna wyœwietlania i limitu klatek na sekundê 
+    sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense !");
     window.setFramerateLimit(60);
 
-    // Inicjalizacja managera przeciwników(bardzo wazne klasa dla gracza i przeciwknika, duzo sie na niej opiera logiki)
+    // Inicjalizacja managera przeciwników(bardzo wazne klasa dla gracza i przeciwknika, duzo sie na niej opiera logiki
     EnemyManager manager;
+    g_enemyManager = &manager; // Przypisanie do wskaŸnika globalnego dla callbacku
 
     // Wczytanie wspolrzedych mapy i przekazanie ich do managera
     std::vector<sf::Vector2f> path = PathLoader::loadPath("../Assets/maps/map1.txt");
     manager.setPath(path);
 
+
+
+
+    // SYSTEM WIE¯ 
+
+    FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
+    //przekazanie callbacka do kierownika wiezy
+    KierownikWiezy kierownik_Wiezy(callbackObrazen);
+
+    /*mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
+    mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
+    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));*/
+
+    //stawiam pare wiez testowych(pozycja,typ)
+    /*kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");*/
+
+
+    
+    // SYSTEM GRY 
+    
     // Inicjalizacja elementów sceny
     initForge(window); //inicjalizuje kuznie
     initHUD(); // inicjalizuje HUD
@@ -96,56 +135,29 @@ int main() {
     sf::FloatRect przyciskStart(450.f, 300.f, 300.f, 80.f);
 
     // Zmienne steruj¹ce stanem gry
-    sf::Clock clock;
+    sf::Clock zegar;
     int currentWave = 0;
     bool graStart = false; //zmienna sprawdzajaca czy gra zostala ropoczeta
     bool gamePaused = false;
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
-	sf::Clock zegar;
-	
-	FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
-	//przekazanie callbacka do kierownika wiezy
-	KierownikWiezy kierownik_Wiezy(callbackObrazen);
-
-	mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
-	mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
-    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));
 
 
-    //stawiam pare wiez testowych(pozycja,typ)
+
     kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
     kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
-
-
-    //testowa lista ceklow
-    vector<Cel> cele;
-	cele.push_back({ 10, {150.f,150.f} });
-	cele.push_back({ 11, {400.f,300.f} });
 
 
     // G³ówna pêtla gry
     while (window.isOpen()) {
         sf::Event event;
-        float dt = clock.restart().asSeconds();
+        //float dt = zegar.restart().asSeconds();
+       
+        //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki (dla wie¿)
+        float czasDelta = zegar.restart().asSeconds();
 
         // Obs³uga zdarzeñ systemowych (zamkniêcie okna, sterowanie)
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::S) {
-                    for (int i = 0; i < 30; i++) {
-                        int id = 100 + i;
-                        mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
-                    }
-                    cout << "STRES test dodano 30 celow" << endl;
-                }
-
-                if (event.key.code == sf::Keyboard::D) {
-                    kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
-                }
-            }
-        }
 
             handleForgeEvent(event, manager); //obsluga kuzni
 
@@ -166,6 +178,27 @@ int main() {
             }
             // Logika w trakcie gry
             else if (!manager.gameOver()) {
+
+                
+
+
+                if (event.type == sf::Event::KeyPressed) {
+                    /*if (event.key.code == sf::Keyboard::S) {
+                        for (int i = 0; i < 30; i++) {
+                            int id = 100 + i;
+                            mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
+                        }
+                        cout << "STRES test dodano 30 celow" << endl;
+                    }*/
+
+                    if (event.key.code == sf::Keyboard::D) {
+                        kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+                    }
+                }
+
+
+
+
                 // do testu, zadanie obrazen przyciskiem myszy
                 // tu bedzie zmiana na wieze
                 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -198,11 +231,21 @@ int main() {
 
         //aktualizacja gry gdy ta nie jest zatrzymana
         if (graStart && !gamePaused && !manager.gameOver()) {
-            manager.update(dt);
+            manager.update(czasDelta);
+
+            // AKTUALIZACJA WIE¯  
+            //zrobienie listy celow na podstawie mapy wrogow
+            vector<Cel> aktualna_lista_celow = StworzListeCelow(manager);
+
+            //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
+            kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
+
+            //usuwamy pokonane cele z mapy
+            //usunpokonanecele();
         }
 
         // Rysowanie sceny
-        window.clear();
+        window.clear(sf::Color(20, 20, 30)); // Kolor t³a z 
 
         if (!graStart) {
             window.draw(menuSprite); //rysuje menu
@@ -213,45 +256,31 @@ int main() {
         else {
             // Rysowanie aktywnej rozgrywki
             renderMapa(window); //rysuje mape
-            manager.draw(window); // Rysowanie przeciwników i logiki
+
+            // Rysowanie przeciwników i logiki
+            manager.draw(window);
+
+            // --- RYSOWANIE WIE¯ I CELÓW TESTOWYCH (Z Kodu 1) ---
+            // Rysowanie  pociskow (debug)
+            /*for (const auto& para : mapa_wrogow) {
+                sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
+                ksztaltCelu.setOrigin(10.f, 10.f);
+                ksztaltCelu.setPosition(para.second.pozycja);
+                ksztaltCelu.setFillColor(sf::Color::Green);
+                window.draw(ksztaltCelu);
+            }*/
+
+            // Rysowanie  pociskow
+            kierownik_Wiezy.RysujDebug(window);
+
             rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
             rysujForge(window, manager); //rysuje kuznie 
         }
 
-    
-     
-   //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki
-		float czasDelta = zegar.restart().asSeconds();
-
-		//zrobienie listy celow na podstawie mapy wrogow
-		vector<Cel> aktualna_lista_celow = StworzListeCelow();
-
-
-        //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
-		kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
-
-		//usuwamy pokonane cele z mapy
-		usunpokonanecele();
-
-        window.clear(sf::Color(20,20,30));
-            
-		
-
-		// Rysowanie  pociskow (debug)
-		for(const auto& para : mapa_wrogow) {
-            sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
-            ksztaltCelu.setOrigin(10.f, 10.f);
-            ksztaltCelu.setPosition(para.second.pozycja);
-            ksztaltCelu.setFillColor(sf::Color::Green);
-            window.draw(ksztaltCelu);
-        }
-		
-		kierownik_Wiezy.RysujDebug(window);
         window.display();
     }
-	return 0;
 
-
+    return 0;
 }
 
 WaveConfig getWaveSettings(int waveNumber) {//scenariusze fali
