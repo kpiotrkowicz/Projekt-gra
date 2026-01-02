@@ -50,10 +50,10 @@ void EnemyManager::spawnEnemy(int type) {
     }
 
     // Dodanie nowego przeciwnika do listy aktywnych obiektów
-    enemies.emplace_back(path, speed, hp, *selectedTexture, reward, demage);
+    enemies.emplace_back(nextEnemyID++, path, speed, hp, *selectedTexture, reward, demage);
 
     // Informacje o utworzonej jednostce w konsoli
-    std::cout << "[SPAWN] Typ: " << type << " HP: " << hp << " Speed: " << speed << std::endl;
+    std::cout << "[SPAWN] ID: " << nextEnemyID-1 << " Typ: " << type << " HP: " << hp << " Speed: " << speed << std::endl;
 }   
 
 void EnemyManager::startWave(const WaveConfig& config) {
@@ -65,7 +65,7 @@ void EnemyManager::startWave(const WaveConfig& config) {
 
 bool EnemyManager::isWaveActive() const {
 	// Fala jest aktywna, gdy lista wrogów nie jest pusta lub pozosta³y jednostki do stworzenia i gracz ma jeszcze ¿ycie
-    return !enemies.empty() || !spawnQueue.empty() || playerHealth < 0;
+    return !enemies.empty() || !spawnQueue.empty();
 }
 
 void EnemyManager::update(float dt) {
@@ -129,6 +129,20 @@ void EnemyManager::draw(sf::RenderWindow& window) {
     for (auto& e : enemies) e.draw(window);
 }
 
+
+std::vector<Enemy>& EnemyManager::getActiveEnemies() {
+    return enemies;
+}
+
+// Przeszukuje listê w poszukiwaniu ID i zadaje obra¿enia
+void EnemyManager::damageEnemy(int id, float iloscObrazen) {
+    for (auto& wrog : enemies) {
+		if (wrog.id == id) { //w klasie Enemy jest zmienna id publiczna
+            wrog.takeDamage(iloscObrazen);
+            break; // Znaleziono i trafiono, mo¿na przerwaæ pêtlê
+        }
+    }
+}
 
 
 void EnemyManager::MouseClick(sf::Vector2f mousePos) {

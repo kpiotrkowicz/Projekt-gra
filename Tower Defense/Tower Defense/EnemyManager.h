@@ -37,9 +37,18 @@ public:
 	//koniec gry gdy zycie spadnie do zera
 	bool gameOver() const { return playerHealth <= 0; }
     
+	//ile zycia ma gracz dla hud
 	int getPlayerHealth() const { return playerHealth; }
 
+    //ile pieniedzy ma gracz dla hud
 	void moneySum(int amount) { playerMoney += amount; }
+
+
+	// Pobranie referencji do listy aktywnych przeciwników dla wiez
+    std::vector<Enemy>& getActiveEnemies();
+
+	// Zadawanie obra¿eñ przeciwnikowi o okreœlonym ID
+    void damageEnemy(int id, float iloscObrazen);
 
 
     //do testu to klikanie myszy
@@ -48,12 +57,13 @@ public:
 private:
     std::vector<int> spawnQueue; // Kolejka typów do spawnowania w obecnej fali
 	WaveConfig currentWave;      // Bie¿¹ca konfiguracja fali
-    std::list<Enemy> enemies;       // Lista przechowuj¹ca aktywnych przeciwników
+    std::vector<Enemy> enemies;       // Lista przechowuj¹ca aktywnych przeciwników
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
 
 	// Zasoby gry
 	int playerMoney = 101; //pieniadze gracza
 	int playerHealth = 105; //zycie gracza
+	int nextEnemyID = 0; // Unikalny identyfikator dla ka¿dego przeciwnika
 
     // Zmienne steruj¹ce mechanik¹ fal
     int waveEnemyType = 0;

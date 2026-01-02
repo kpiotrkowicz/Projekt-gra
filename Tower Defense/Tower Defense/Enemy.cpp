@@ -1,8 +1,8 @@
 #include "Enemy.h"
 #include <cmath>
 
-Enemy::Enemy(const std::vector<sf::Vector2f>& p, float s, int hp, const sf::Texture& texture, int m, int d)
-    : path(p), speed(s), currentHp(hp), hasReachedEnd(false), money(m), demage(d)
+Enemy::Enemy(int id, const std::vector<sf::Vector2f>& p, float s, int hp, const sf::Texture& texture, int m, int d)
+    : id(id), path(p), speed(s), currentHp(hp), hasReachedEnd(false), money(m), demage(d)
 {
     // Przypisanie tekstury i ustawienie punktu obrotu na œrodek grafiki
     sprite.setTexture(texture);

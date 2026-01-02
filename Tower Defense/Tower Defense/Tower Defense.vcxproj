@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="KierownikWiezy.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="forge.cpp" />
@@ -149,6 +150,15 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="PathLoader.h" />
+    <ClCompile Include="pocisk.cpp" />
+    <ClCompile Include="wieza.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="interfejs.h" />
+    <ClInclude Include="KierownikWiezy.h" />
+    <ClInclude Include="pocisk.h" />
+    <ClInclude Include="wieza.h" />
+    <ClInclude Include="zabojcacelow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

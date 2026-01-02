@@ -6,7 +6,7 @@
 class Enemy {
 public:
     // Inicjalizacja przeciwnika z okreœlon¹ œcie¿k¹, prêdkoœci¹, punktami ¿ycia i tekstur¹, pieniedzmi obrazeniami
-    Enemy(const std::vector<sf::Vector2f>& path, float speed, int hp, const sf::Texture& texture, int m, int d);
+    Enemy(int id,const std::vector<sf::Vector2f>& path, float speed, int hp, const sf::Texture& texture, int m, int d);
 
     // Aktualizacja stanu logicznego obiektu w ka¿dej klatce
     void update(float dt);
@@ -23,20 +23,25 @@ public:
     // Pobranie aktualnej liczby punktów ¿ycia
     int getHp() const { return currentHp; }
 
-	// Zadawanie obra¿eñ przeciwnikowi
-    void takeDamage(int amount) {
-        currentHp -= amount;
+    // Zadawanie obra¿eñ przeciwnikowi
+    void takeDamage(float amount) {
+        currentHp -= (int)amount;
         if (currentHp < 0) currentHp = 0;
     }
     // Nagroda za zabicie przeciwnika
-	int getReward() const { return money; }
+    int getReward() const { return money; }
     // Obrazenia zadane graczowi(jak dotrze do konca scie¿ki)
-	int getDemage() const { return demage; }
+    int getDemage() const { return demage; }
 
     bool isClicked(sf::Vector2f mousePos) const {
         return sprite.getGlobalBounds().contains(mousePos);
     }
 
+
+    int id; // Unikalny identyfikator przeciwnika
+
+    int getID() const { return id; }
+    sf::Vector2f getPosition() const { return sprite.getPosition(); }
 
 private:
     std::vector<sf::Vector2f> path; // Kontener przechowuj¹cy wspó³rzêdne punktów drogi
