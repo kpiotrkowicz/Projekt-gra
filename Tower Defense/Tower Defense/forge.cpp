@@ -73,15 +73,20 @@ void handleForgeEvent(const sf::Event& event) {
 			if (wybranaWieza >= liczbaWiez) wybranaWieza = 0;
 		}
 	}
-		//kupno wiezy
-		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
+	//kupno wiezy
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		sf::Vector2f mousePos(
+			(float)event.mouseButton.x, (float)event.mouseButton.y);
+		//sprawdzamy czy kliknieto w ikonke wiezy
+		if (towerSprite[wybranaWieza].getGlobalBounds().contains(mousePos)) {
 			if (zloto >= cenaWiezy[wybranaWieza]) {
 				zloto -= cenaWiezy[wybranaWieza];
-				//tu potem ma byc stawianie wiezy!!!!
 			}
-	}
-	}
+			//tu potem ma byc stawianie wiezy!!!!
 
+		}
+	}
+}
 	void rysujForge(sf::RenderWindow& window){
 		if (!kuzniaWidoczna) return;
 
@@ -104,8 +109,7 @@ void handleForgeEvent(const sf::Event& event) {
 
 			window.draw(towerSprite[i]);
 			window.draw(cenaTekst[i]);
-	
-			window.draw(towerSprite[i]);
+
 		}
 	
 	}
