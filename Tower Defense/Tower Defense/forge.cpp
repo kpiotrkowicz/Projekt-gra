@@ -13,7 +13,6 @@ int cenaWiezy[4] = {
 
 };
 
-extern int zloto;
 
 //wieze
 sf::Texture towerTex[liczbaWiez];
@@ -54,7 +53,7 @@ void initForge(sf::RenderWindow& window) {
 	
 
 
-void handleForgeEvent(const sf::Event& event) {
+void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 	//tab- ukrywamy kuznie
 
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {
@@ -75,17 +74,17 @@ void handleForgeEvent(const sf::Event& event) {
 	}
 		//kupno wiezy
 		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
-			if (zloto >= cenaWiezy[wybranaWieza]) {
-				zloto -= cenaWiezy[wybranaWieza];
+			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
+				manager.moneySum( -cenaWiezy[wybranaWieza]);
 				//tu potem ma byc stawianie wiezy!!!!
 			}
 	}
 	}
 
-	void rysujForge(sf::RenderWindow& window){
+	void rysujForge(sf::RenderWindow& window, EnemyManager& manager){
 		if (!kuzniaWidoczna) return;
 
-		
+		int aktualneZloto = manager.getPlayerMoney();
 
 		for (int i = 0; i < liczbaWiez; i++) {
 
@@ -97,7 +96,7 @@ void handleForgeEvent(const sf::Event& event) {
 				towerSprite[i].setColor(sf::Color(150, 150, 150));
 				towerSprite[i].setScale(0.1f, 0.1f);
 			}
-			if (zloto < cenaWiezy[i]) //ceny wiez
+			if (aktualneZloto < cenaWiezy[i]) //ceny wiez
 				cenaTekst[i].setFillColor(sf::Color(180, 50, 50));
 			else
 				cenaTekst[i].setFillColor(sf::Color::White);

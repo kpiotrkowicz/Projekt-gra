@@ -3,9 +3,9 @@
 
 EnemyManager::EnemyManager() {
     // £adowanie tekstur z plików 
-    if (!texStandard.loadFromFile("../assets/enemy/w1.png")) { /* na koncu  do zrobienia obluga bledu bo program sie wykrzacza sam jak jest cos zle */ }
-    if (!tex2.loadFromFile("../assets/enemy/w2.png")) { /* do ob³sugi b³êdu */ }
-    if (!tank.loadFromFile("../assets/enemy/w3.png")) {}
+    if (!texStandard.loadFromFile("../Assets/enemy/w1.png")) { /* na koncu  do zrobienia obluga bledu bo program sie wykrzacza sam jak jest cos zle */ }
+    if (!tex2.loadFromFile("../Assets/enemy/w2.png")) { /* do ob³sugi b³êdu */ }
+    if (!tank.loadFromFile("../Assets/enemy/w3.png")) {}
 }
 
 //Jak ta oblsuga nie bedzie dzialac to mozna optymistycznie zalozyc ze pliki sa zawsze dostepne 

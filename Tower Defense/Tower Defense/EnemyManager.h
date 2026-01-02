@@ -37,6 +37,9 @@ public:
 	//koniec gry gdy zycie spadnie do zera
 	bool gameOver() const { return playerHealth <= 0; }
     
+	int getPlayerHealth() const { return playerHealth; }
+
+	void moneySum(int amount) { playerMoney += amount; }
 
 
     //do testu to klikanie myszy
@@ -49,8 +52,8 @@ private:
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
 
 	// Zasoby gry
-	int playerMoney = 100; //pieniadze gracza
-	int playerHealth = 1; //zycie gracza
+	int playerMoney = 101; //pieniadze gracza
+	int playerHealth = 105; //zycie gracza
 
     // Zmienne steruj¹ce mechanik¹ fal
     int waveEnemyType = 0;

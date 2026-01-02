@@ -63,7 +63,7 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            handleForgeEvent(event); //obsluga kuzni
+            handleForgeEvent(event, manager); //obsluga kuzni
 
             // Obs³uga klawisza Escape
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
@@ -130,8 +130,8 @@ int main() {
             // Rysowanie aktywnej rozgrywki
             renderMapa(window); //rysuje mape
             manager.draw(window); // Rysowanie przeciwników i logiki
-            rysujHUD(window); //rysuje hud 
-            rysujForge(window); //rysuje kuznie 
+            rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
+            rysujForge(window, manager); //rysuje kuznie 
         }
 
         window.display();

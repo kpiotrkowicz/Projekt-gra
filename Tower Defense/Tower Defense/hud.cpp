@@ -1,10 +1,6 @@
 #include "hud.h"
 #include <string>
 
-int zycieBazy = 100;
-int zloto = 100;
-int fala = 1;
-
 sf::Font hudFont; //czcionka HUD
 
 sf::Text tekstZycie;
@@ -32,7 +28,7 @@ void initHUD() {
 	tekstFala.setCharacterSize(22);
 	tekstFala.setFillColor(sf::Color::Cyan);
 }
-void rysujHUD(sf::RenderWindow& window) {
+void rysujHUD(sf::RenderWindow& window, int zycieBazy, int zloto, int fala) {
 	float margines = 20.f;
 
 	sf::Vector2u rozmiarOkna = window.getSize();
