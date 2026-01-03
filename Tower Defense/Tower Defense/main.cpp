@@ -31,7 +31,8 @@ for (const auto& para : mapa_wrogow) {//iteracja po mapie
         lista_celow.push_back({ 
             
             para.second.id, 
-            para.second.pozycja });
+            para.second.pozycja,
+            para.second.zycie});
     }
 }return lista_celow;
 };
@@ -62,37 +63,61 @@ int main() {
 
 
     //stawiam pare wiez testowych(pozycja,typ)
-    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
+    kierownik_Wiezy.DodajWieze({ 100.f,150.f }, "tower_1");
+    kierownik_Wiezy.DodajWieze({ 250.f,150.f }, "tower_2");
+    kierownik_Wiezy.DodajWieze({ 400.f,150.f }, "tower_2");
+    kierownik_Wiezy.DodajWieze({ 550.f,150.f }, "tower_2");
 
 
-    //testowa lista ceklow
-    vector<Cel> cele;
-	cele.push_back({ 10, {150.f,150.f} });
-	cele.push_back({ 11, {400.f,300.f} });
+   
+	
+    vector<sf::Sprite> ikonyMenu(4);
+	vector<sf::Texture> teksturyMenu(4);
+    vector<string>typyWiez = {"tower_1","tower_2", "tower_3","tower_4"};
+    for (int i = 0; i < 4; ++i) {
+		if (teksturyMenu[i].loadFromFile(typyWiez[i] + ".png")) {
+            ikonyMenu[i].setTexture(teksturyMenu[i]);
+			//trzeba zesksalpwac te obfazki do rozmiarow ikonek menu
+			float skalaX = 50.f / ikonyMenu[i].getLocalBounds().width;
+			ikonyMenu[i].setScale(skalaX, skalaX);
+            ikonyMenu[i].setPosition(50.f + i * 100.f, 520.f);
+            
+        }
+        else {
+            cout << "Nie mozna zaladowac tekstury: " << typyWiez[i] << endl;
+        }
+    }
 
+	string wybranyTypWiezy = "tower_1";//domyslnie wybieramy narazie wieze 1
+    
 
     while (window.isOpen()) {
         sf::Event event;
 
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed) {
                 window.close();
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::S) {
-                    for (int i = 0; i < 30; i++) {
-                        int id = 100 + i;
-                        mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
-                    }
-                    cout << "STRES test dodano 30 celow" << endl;
-                }
+            }
 
-                if (event.key.code == sf::Keyboard::D) {
-                    kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f myszPozycja(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                //sprawdzamy czy kliknieto na ikone menu
+                bool kliknietowWMenu = false;
+                for (int i = 0; i < 4; ++i) {
+                    if (ikonyMenu[i].getGlobalBounds().contains(myszPozycja)) {
+                        wybranyTypWiezy = typyWiez[i];
+                        kliknietowWMenu = true;
+                        cout << "Wybrano wieze typu: " << wybranyTypWiezy << endl;
+                        break;
+                    }
                 }
+                if (!kliknietowWMenu&&myszPozycja.y<500.f) {
+                    //jezeli nie kliknieto w menu to stawiamy wieze na mapie
+                    kierownik_Wiezy.DodajWieze(myszPozycja, wybranyTypWiezy);
+                    cout << "Postawiono wieze typu: " << wybranyTypWiezy << " na pozycji (" << myszPozycja.x << ", " << myszPozycja.y << ")" << endl;
+				}
             }
         }
-    
      
    //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki
 		float czasDelta = zegar.restart().asSeconds();
@@ -121,6 +146,9 @@ int main() {
         }
 		
 		kierownik_Wiezy.RysujDebug(window);
+		for (const auto& ikona : ikonyMenu) {
+            window.draw(ikona);
+        }
         window.display();
     }
 	return 0;

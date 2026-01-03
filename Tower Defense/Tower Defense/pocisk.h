@@ -17,7 +17,8 @@ public:
 	int PobierzIdCelu() const { return id_celu; }
 	bool czy_zywy = true; //czy pocisk jest aktywny i czy jest zuzyty czy nie 
 	float PobierzObrazenia() const { return obrazenia; }
-
+	void UstawNowyCel(int noweIdCelu) { id_celu = noweIdCelu; }//ustawienie nowego celu dla pocisku
+	sf::Vector2f Pobierzpozycje() const { return pozycja; }//pobieramy pozycje pocisku
 private:
 	int id; //unikalne id pocisku
 	int id_celu; //id celu do ktorego leci pocisk

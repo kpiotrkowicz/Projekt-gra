@@ -8,9 +8,11 @@ using namespace std;
 using namespace std::placeholders;
 
 KierownikWiezy::KierownikWiezy(FZwrotnaObrazen zewnetrznyCallbackObrazen)
-	: zewnetrznyCallbackObrazen(zewnetrznyCallbackObrazen) {
+	: zewnetrznyCallbackObrazen(zewnetrznyCallbackObrazen),
 	// Konstruktor kierownika wiezy
-	cout << "Kierownik utworzony.\n" << endl;
+	nastepneIdWiezy(1),
+		nastepneIdPocisku(1),
+		id(0){cout << "Kierownik utworzony.\n" << endl;
 }
 
 
@@ -25,29 +27,55 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 	for (auto it = pociski.begin(); it != pociski.end();) {
 		int id_celu = (*it)->PobierzIdCelu();
 		auto cel_it = find_if(cele.begin(), cele.end(),
-			[id_celu](const Cel& cel) 
+			[id_celu](const Cel& cel)
 			{ return cel.id == id_celu; });
 		// Znajdz pozycje celu pocisku
 
 		sf::Vector2f pozycjaCelu;
+		bool celZnaleziony = false;
 		if (cel_it != cele.end()) {
+			//cel istnieje zyje, pobieram pozycje 
 			pozycjaCelu = cel_it->pozycja;
+			celZnaleziony = true;
 		}
 		else {
-			// Cel nie istnieje, usun pocisk
-			it = pociski.erase(it);
-			continue;
+			// Cel nie istnieje- bierzemy go do naszej pozycji
+			 //cel zginal wiec pocisk nie ma dokad leciec-szukamy nowego celu
+			int najlepszyNowyCelId = -1;
+			float minDystansKw = 160000.f; //duza wartosc poczatkowa 400px
+			for (const auto& cel : cele) {
+				//obliczamy dystans kwadratowy do celu zeby uniknac pierwiastkowania
+				float dx = cel.pozycja.x - (*it)->Pobierzpozycje().x;
+				float dy = cel.pozycja.y - (*it)->Pobierzpozycje().y;
+				float dystansKw = dx * dx + dy * dy;
+				if (dystansKw < minDystansKw) {
+					minDystansKw = dystansKw;
+					najlepszyNowyCelId = cel.id;
+					pozycjaCelu = cel.pozycja;
+					celZnaleziony = true;
+				}
+			}
+			if (najlepszyNowyCelId != -1) {
+				(*it)->UstawNowyCel(najlepszyNowyCelId);
+			}
 		}
-
-		(*it)->Aktualizuj(czasDelta, pozycjaCelu);
-		if (!(*it)->CzyZywy()) {
-		it=pociski.erase(it); // Usun pocisk jesli nie zywy
-		}
-		else {
-			++it;
+			if (celZnaleziony) {
+				(*it)->Aktualizuj(czasDelta, pozycjaCelu);
+				if (!(*it)->CzyZywy()) {
+					it = pociski.erase(it);
+				}
+				else {
+					++it;
+				}
+			}
+			else {
+				it = pociski.erase(it);
+			}
 		}
 	}
-}
+
+
+
 
 
 	//zwalniamiy pamiec i usuwamy niepotrzebne pociski
@@ -94,8 +122,7 @@ void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 }
 */
 void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
-	float zasieg=150.0f
-		;
+	float zasieg=150.0f;
 	float obrazenia = 10.0f;
 	float czasOdnowienia = 1.5f;
 
@@ -121,7 +148,7 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 	}
 	wieze.emplace_back(nastepneIdWiezy++,
 		pozycja, zasieg,
-		obrazenia, czasOdnowienia, zewnetrznyCallbackObrazen, bind(&KierownikWiezy::UtworzPocisk, this, _1,_2,_3,_4),typ);
+		obrazenia, czasOdnowienia, zewnetrznyCallbackObrazen, bind(&KierownikWiezy::UtworzPocisk, this, _2,_1,_3,_4),typ);
 }
 
 

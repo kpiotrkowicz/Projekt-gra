@@ -46,7 +46,7 @@ void pocisk::Aktualizuj(float czas_delta, sf::Vector2f pozycjaCelu)
 		pozycja += ruch; // Aktualizuj pozycje pocisku i kontynuuje lot 
 	}
 }
-	void pocisk::zasiegDebug(sf::RenderWindow & window) const {
+void pocisk::zasiegDebug(sf::RenderWindow & window) const {
 		if (czy_zywy==false) return;
 		sf::CircleShape ksztalt(1.f);
 		ksztalt.setOrigin(1.f, 1.f);
