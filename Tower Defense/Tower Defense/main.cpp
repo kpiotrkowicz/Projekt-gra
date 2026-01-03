@@ -168,8 +168,8 @@ int main() {
     mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));*/
 
     //stawiam pare wiez testowych(pozycja,typ)
-    /*kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");*/
+    //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
 
 
     
@@ -203,8 +203,8 @@ int main() {
 
 
 
-    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
+    //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
 
 
     // G³ówna pêtla gry
