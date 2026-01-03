@@ -22,9 +22,10 @@ private:
 	int id; //unikalne id pocisku
 	int id_celu; //id celu do ktorego leci pocisk
 	sf::Vector2f pozycja; //pozycja pocisku
-	float predkosc=400.0f; //predkosc pocisku (stala)
+	float predkosc=800.0f; //predkosc pocisku (stala)
 	float obrazenia; //obrazenia jakie zadaje pocisk
 	FZwrotnaObrazen przyznajObrazeniaCallback; //callback do przyznawania obrazen
+	float licznikZycia = 0.0f;
 
 
 };

@@ -25,6 +25,7 @@
 
 //wskaznik globalny do kierownika wrogow aby bylo mozna z niego korzystac w callbacku
 EnemyManager* g_enemyManager = nullptr;
+KierownikWiezy* g_kierownikWiezy = nullptr;
 
 //funkcja ktora wywola kierownik wiezy gdy pocisk trafi w cel
 static void PrzyznajObrazenia(int celId, float ilosobrazen) {
@@ -45,7 +46,7 @@ static vector<Cel>StworzListeCelow(EnemyManager& manager) {
 
     auto& wrogowie = manager.getActiveEnemies();
     for (const auto& wrog : wrogowie) {
-        lista_celow.push_back({ wrog.getID(), wrog.getPosition() });
+        lista_celow.push_back({ wrog.getID(), wrog.getPosition(), (float)wrog.getHp()});
     }
 
     //for (const auto& para : mapa_wrogow) {//iteracja po mapie
@@ -76,15 +77,26 @@ static vector<Cel>StworzListeCelow(EnemyManager& manager) {
 //    }
 //};
 
+//tworzymy pocisk
+static void Stworzpocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
+    if (g_kierownikWiezy) {
+        //funkcja znajduje sie w KierownikWiezy.cpp
+        g_kierownikWiezy->UtworzPocisk(wiezaId, celId, pozycjaStartowa, obrazenia);
+    }
+}
 
 
 WaveConfig getWaveSettings(int waveNumber); //funkcja do ustawiania poziomu fal (napisana na dole)
 
+
 int main() {
-<<<<<<< HEAD
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
+
+   /* sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
 	sf::Clock zegar;
 	
+	EnemyManager manager;
+	g_enemyManager = &manager; // Przypisanie do wskaŸnika globalnego dla callbacku
+
 	FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
 	//przekazanie callbacka do kierownika wiezy
 	KierownikWiezy kierownik_Wiezy(callbackObrazen);
@@ -124,12 +136,12 @@ int main() {
     }
 
 	string wybranyTypWiezy = "tower_1";//domyslnie wybieramy narazie wieze 1
-    
-=======
+    */
+
     // Konfiguracja okna wyœwietlania i limitu klatek na sekundê 
     sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense !");
     window.setFramerateLimit(60);
->>>>>>> fa1b188b3471b8222dbfd54a6350e735fd593471
+
 
     // Inicjalizacja managera przeciwników(bardzo wazne klasa dla gracza i przeciwknika, duzo sie na niej opiera logiki
     EnemyManager manager;
@@ -145,8 +157,11 @@ int main() {
     // SYSTEM WIE¯ 
 
     FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
+	FUtworzPocisk callbackStworzPocisk = Stworzpocisk;
+
     //przekazanie callbacka do kierownika wiezy
-    KierownikWiezy kierownik_Wiezy(callbackObrazen);
+    KierownikWiezy kierownik_Wiezy(callbackObrazen,callbackStworzPocisk);
+	g_kierownikWiezy = &kierownik_Wiezy; // Przypisanie do wskaŸnika globalnego dla callbacku
 
     /*mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
     mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));

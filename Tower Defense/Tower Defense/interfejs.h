@@ -11,4 +11,4 @@ using FZwrotnaObrazen = function<void(int, float)>;
 // sf:: Vector2f pozycjaStartowa - pozycja startowa pocisku, float obrazenia - obrazenia jakie ma zadac pocisk
 //float obrazenia - obrazenia jakie ma zadac pocisk
 
-using FUtworzPocisk = function<void(int celId, int wiezaId, sf::Vector2f pozycjaStartowa, float obrazenia)>;
+using FUtworzPocisk = function<void(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia)>;

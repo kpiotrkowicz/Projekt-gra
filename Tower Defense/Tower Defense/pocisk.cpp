@@ -12,7 +12,12 @@ pocisk::pocisk(int id, int id_celu, sf::Vector2f pozycjaStartowa, float obrazeni
 void pocisk::Aktualizuj(float czas_delta, sf::Vector2f pozycjaCelu)
 {
 	if (!czy_zywy) return;
-
+	licznikZycia += czas_delta;
+	if (licznikZycia >= 5.0f) {
+		czy_zywy = false;
+		cout << "DEBUG POCISK ID: " << id << "minal czas zycia i zostal usuniety " << endl;
+		return;
+	}
 	// Oblicz wektor kierunku do celu
 	sf::Vector2f kierunek = pozycjaCelu - pozycja;
 	float odleglosc = sqrt(kierunek.x * kierunek.x + kierunek.y * kierunek.y);

@@ -7,7 +7,7 @@
 using namespace std;
 using namespace std::placeholders;
 
-KierownikWiezy::KierownikWiezy(FZwrotnaObrazen zewnetrznyCallbackObrazen)
+KierownikWiezy::KierownikWiezy(FZwrotnaObrazen zewnetrznyCallbackObrazen,FUtworzPocisk callbackStworzPocisk)
 	: zewnetrznyCallbackObrazen(zewnetrznyCallbackObrazen) {
 	// Konstruktor kierownika wiezy
 	cout << "Kierownik utworzony.\n" << endl;
@@ -101,7 +101,7 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 	if (typ == "tower_1") {//wieza lucznikow ta slomiana 
 		zasieg = 220.0f;
 		obrazenia = 12.0f;
-		czasOdnowienia = 0.6f;
+		czasOdnowienia = 0.3f;
 	}
 	if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
 		zasieg = 160.0f;

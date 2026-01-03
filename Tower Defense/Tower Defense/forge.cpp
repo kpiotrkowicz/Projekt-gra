@@ -1,9 +1,14 @@
 #include "forge.h"
+#include "KierownikWiezy.h"
+#include <vector>
 #include<string>
+
+extern KierownikWiezy* g_kierownikWiezy;
 //tu chodzi o wybor wiez scrollem
 int wybranaWieza = 0;
 const int liczbaWiez = 4;
 bool kuzniaWidoczna = true;
+
 
 int cenaWiezy[4] = {
 	50,   // wieza 1 
@@ -75,7 +80,22 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 		//kupno wiezy
 		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
 			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
-				manager.moneySum( -cenaWiezy[wybranaWieza]);
+				
+				sf::Vector2f mousePos(
+					static_cast<float>(event.mouseButton.x),
+					static_cast<float>(event.mouseButton.y)
+				);
+				if (mousePos.y < (1024 - 250.f)) {//1024 wysokosc okna - wysokosc 
+					manager.moneySum(-cenaWiezy[wybranaWieza]); //odejmij pieniadze
+					std::string typy[] = { "tower_1","tower_2","tower_3","tower_4" };
+					if (g_kierownikWiezy) 
+					
+					{
+						g_kierownikWiezy->DodajWieze(mousePos, typy[wybranaWieza]);
+					};
+				}
+
+				
 				//tu potem ma byc stawianie wiezy!!!!
 			}
 	}

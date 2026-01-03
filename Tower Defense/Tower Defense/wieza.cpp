@@ -35,19 +35,35 @@ void wieza::Aktualizuj(float czasDelta, const vector<Cel>& potencjalneCele)
 	// Aktualizuj czas od ostatniego strzalu
 	czasOdOstatniegoStrzalu += czasDelta;
 	// Sprawdz czy mamy cel
-	if (aktualnyCelId == -1)
+	//aktualnyCelId = -1; // Resetuj cel na poczatku aktualizacji
+	ZnajdzCel(potencjalneCele);
+
+		/*if (aktualnyCelId != -1  && czasOdOstatniegoStrzalu >= czasOdnowienia)
 	{
-		ZnajdzCel(potencjalneCele);
+		Strzel();
+		czasOdOstatniegoStrzalu = 0.0f; // Resetuj timer strzalu
+	}*/
+	//strzelaj jesli czas odnow minal 
+	if (aktualnyCelId!=-1 && czasOdOstatniegoStrzalu >= czasOdnowienia) {
+		Strzel();
+		czasOdOstatniegoStrzalu = 0.0f;
 	}
-	// Jesli mamy cel, sprawdz czy mozemy strzelic
 	if (aktualnyCelId != -1)
 	{
-		if (czasOdOstatniegoStrzalu >= czasOdnowienia)
-		{
-			Strzel();
-			czasOdOstatniegoStrzalu = 0.0f; // Resetuj timer strzalu
+		for (const auto& cel : potencjalneCele) {
+			//ZnajdzCel(potencjalneCele);
+			if (cel.id == aktualnyCelId) {
+				float dx = cel.pozycja.x - pozycja.x;
+				float dy = cel.pozycja.y - pozycja.y;
+				float kat = atan2(dy, dx) * 180 / 3.14159f;
+				sprite.setRotation(kat + 90);//90 zaelzy od tego jak narysowany jest obrazek png
+				break;
+			}
+		
 		}
+		
 	}
+	
 }
 
 //jak znajdowac cele - szukamy najblizszego celu
