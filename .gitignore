@@ -18,3 +18,7 @@ CMakeFiles/
 
 # DO NOT IGNORE x64 (potrzebne dla SFML)
 !x64/
+/Tower Defense/Tower Defense/x64/Debug/main.obj
+/Tower Defense/Tower Defense/x64/Debug/Tower Defense.ilk
+/Tower Defense/Tower Defense/x64/Debug/vc143.idb
+/Tower Defense/Tower Defense/x64/Debug/vc143.pdb

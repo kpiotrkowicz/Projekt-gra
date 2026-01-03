@@ -60,13 +60,16 @@ int main() {
 	mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
 	mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
     mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));
+    mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,190.f }, 100.f));
+    mapa_wrogow.emplace(11, ZabojcaCelow(11, { 450.f,300.f }, 150.f));
+    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 609.f,570.f }, 50.f));
 
 
     //stawiam pare wiez testowych(pozycja,typ)
     kierownik_Wiezy.DodajWieze({ 100.f,150.f }, "tower_1");
     kierownik_Wiezy.DodajWieze({ 250.f,150.f }, "tower_2");
-    kierownik_Wiezy.DodajWieze({ 400.f,150.f }, "tower_2");
-    kierownik_Wiezy.DodajWieze({ 550.f,150.f }, "tower_2");
+    kierownik_Wiezy.DodajWieze({ 400.f,150.f }, "tower_3");
+    kierownik_Wiezy.DodajWieze({ 550.f,150.f }, "tower_4");
 
 
    
