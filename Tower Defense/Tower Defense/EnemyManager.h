@@ -62,7 +62,7 @@ private:
 
 	// Zasoby gry
 	int playerMoney = 101; //pieniadze gracza
-	int playerHealth = 105; //zycie gracza
+	int playerHealth = 1; //zycie gracza
 	int nextEnemyID = 0; // Unikalny identyfikator dla ka¿dego przeciwnika
 
     // Zmienne steruj¹ce mechanik¹ fal

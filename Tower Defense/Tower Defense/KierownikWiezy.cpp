@@ -103,17 +103,17 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 		obrazenia = 12.0f;
 		czasOdnowienia = 0.3f;
 	}
-	if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
+	else if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
 		zasieg = 160.0f;
 		obrazenia = 35.0f;
 		czasOdnowienia = 1.8f;
 	}
-	if (typ == "tower_3") {//wieza lodowa- krysztalowa
+	else if (typ == "tower_3") {//wieza lodowa- krysztalowa
 		zasieg = 140.0f;
 		obrazenia = 20.0f;
 		czasOdnowienia = 1.2f;
 	}
-	if (typ == "tower_4") {//wieza magzczna zlota
+	else if (typ == "tower_4") {//wieza magzczna zlota
 		zasieg = 190.0f;
 		obrazenia = 50.0f;
 		czasOdnowienia = 2.5f;
@@ -121,6 +121,7 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 	wieze.emplace_back(nastepneIdWiezy++,
 		pozycja, zasieg,
 		obrazenia, czasOdnowienia, zewnetrznyCallbackObrazen, bind(&KierownikWiezy::UtworzPocisk, this, _1,_2,_3,_4),typ);
+	cout << "Dodano wieze: " << typ << " na pozycji " << pozycja.x << "," << pozycja.y << endl;
 }
 
 

@@ -17,7 +17,7 @@ wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float 
 	typTargetowania("najblizszy"),// Domyslny typ targetowania
 	poziom(1),typ(typ)
 {
-	if (tekstura.loadFromFile(typ+".png")) {
+	if (tekstura.loadFromFile("../Assets/hud/" + typ + ".png")) {
 		sprite.setTexture(tekstura);
 		sf::FloatRect b = sprite.getLocalBounds();
 		sprite.setOrigin(b.width / 2.f, b.height / 2.f);

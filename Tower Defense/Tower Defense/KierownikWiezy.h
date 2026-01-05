@@ -24,7 +24,7 @@ public:
 	bool UlepszWieze(int id_wiezy);
 	void UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia);
 private:
-	vector<wieza> wieze; //lista wiez
+	list<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami
 	vector<unique_ptr<pocisk>> pociski; //lista pociskow zarzadzana przez kierownika wiezy
 
