@@ -93,27 +93,29 @@ void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 		callbackObrazen, callbackPocisk);
 }
 */
+
+
 void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 	float zasieg=150.0f;
 	float obrazenia = 10.0f;
 	float czasOdnowienia = 1.5f;
 
-	if (typ == "tower_1") {//wieza lucznikow ta slomiana 
+	if (typ == "tower_1.png") {//wieza lucznikow ta slomiana 
 		zasieg = 220.0f;
 		obrazenia = 12.0f;
 		czasOdnowienia = 0.6f;
 	}
-	if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
+	if (typ == "tower_2.png") {//wieza ognia ta kamienna z plomieniem 
 		zasieg = 160.0f;
 		obrazenia = 35.0f;
 		czasOdnowienia = 1.8f;
 	}
-	if (typ == "tower_3") {//wieza lodowa- krysztalowa
+	if (typ == "tower_3.png") {//wieza lodowa- krysztalowa
 		zasieg = 140.0f;
 		obrazenia = 20.0f;
 		czasOdnowienia = 1.2f;
 	}
-	if (typ == "tower_4") {//wieza magzczna zlota
+	if (typ == "tower_4.png") {//wieza magzczna zlota
 		zasieg = 190.0f;
 		obrazenia = 50.0f;
 		czasOdnowienia = 2.5f;

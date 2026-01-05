@@ -81,12 +81,12 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 			static_cast<float>(event.mouseButton.y)
 		);
 
-		// sprawdzamy, czy klikniêto NA WYBRAN¥ WIE¯Ê
+		// sprawdzamy, czy klikniêto na dana wieze
 		if (towerSprite[wybranaWieza].getGlobalBounds().contains(mousePos)) {
 			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
 				manager.moneySum(-cenaWiezy[wybranaWieza]);
 
-				// TODO: tutaj póŸniej stawianie wie¿y na mapie
+				//  tutaj póŸniej stawianie wie¿y na mapie
 			}
 		}
 	}
@@ -96,7 +96,7 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 
 void rysujForge(sf::RenderWindow& window, EnemyManager& manager){
 		if (!kuzniaWidoczna) return;
-
+		
 		int aktualneZloto = manager.getPlayerMoney();
 
 		for (int i = 0; i < liczbaWiez; i++) {

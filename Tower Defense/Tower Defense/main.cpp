@@ -12,6 +12,7 @@
 #include "mapa.h"
 #include "hud.h"
 #include "forge.h"
+
 // !!!
 //
 //enemymanager.cpp -> statysyki przeciwnika
@@ -142,8 +143,8 @@ int main() {
 
 
 
-    kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
+   /* kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+    kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");*/
 
 
     // G³ówna pêtla gry
@@ -201,15 +202,37 @@ int main() {
 
                 // do testu, zadanie obrazen przyciskiem myszy
                 // tu bedzie zmiana na wieze
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    // pozycja myszy wzglêdem okna
+                //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                //    // pozycja myszy wzglêdem okna
+                //    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                //    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+
+                    // funkcja zadawania obra¿eñ MYSZY!!!
+                   /* manager.MouseClick(worldPos);
+                }*/
+                
+                // system kupna i stawiania wiezy
+                if (event.type == sf::Event::MouseButtonPressed &&
+                    event.mouseButton.button == sf::Mouse::Left)
+                {
                     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
                     sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
 
-                    // funkcja zadawania obra¿eñ MYSZY!!!
-                    manager.MouseClick(worldPos);
-                }
+                    std::string typWiezy;
+                    if (wybranaWieza == 0) typWiezy = "tower_1";
+                    if (wybranaWieza == 1) typWiezy = "tower_2";
+                    if (wybranaWieza == 2) typWiezy = "tower_3";
+                    if (wybranaWieza == 3) typWiezy = "tower_4";
 
+                    if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
+                        manager.moneySum(-cenaWiezy[wybranaWieza]);
+                        kierownik_Wiezy.DodajWieze(worldPos, typWiezy);
+                    }
+                }
+                //obrazek wiezy
+             /*   kierownik_Wiezy.Rysuj(window);*/
+                
+              
                 // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
                     if (!manager.isWaveActive()) {
@@ -249,6 +272,7 @@ int main() {
 
         if (!graStart) {
             window.draw(menuSprite); //rysuje menu
+			
         }
         else if (manager.gameOver()) {
             window.draw(gameOverSprite); // Wyœwietlenie ekranu koñca gry
@@ -272,6 +296,7 @@ int main() {
 
             // Rysowanie  pociskow
             kierownik_Wiezy.RysujDebug(window);
+            kierownik_Wiezy.Rysuj(window); //rysuje wieze w menu
 
             rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
             rysujForge(window, manager); //rysuje kuznie 

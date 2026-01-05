@@ -17,13 +17,13 @@ wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float 
 	typTargetowania("najblizszy"),// Domyslny typ targetowania
 	poziom(1),typ(typ)
 {
-	if (tekstura.loadFromFile(typ+".png")) {
+	if (tekstura.loadFromFile("../Assets/hud/" + typ + ".png")) {
 		sprite.setTexture(tekstura);
 		sf::FloatRect b = sprite.getLocalBounds();
 		sprite.setOrigin(b.width / 2.f, b.height / 2.f);
 		sprite.setPosition(pozycja);
 		//skalujemy do rozmiaru ktory chcemy
-		float skala = 80.f / b.width; // Przyk³adowa skala
+		float skala = 110.f / b.width; // Przyk³adowa skala
 		sprite.setScale(skala, skala);
 	}
 	cout << "Wieza utworzona o ID: " << id << " na pozycji (" << pozycja.x << ", " << pozycja.y << ")\n"<<endl;
@@ -148,3 +148,6 @@ bool wieza::Ulepsz()
 		return false;
 	}
 }
+void wieza::Rysuj(sf::RenderWindow& window) {
+	window.draw(sprite);
+};

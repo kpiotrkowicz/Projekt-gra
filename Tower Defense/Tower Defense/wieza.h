@@ -28,6 +28,8 @@ class wieza {
 	void zasiegDebug(sf::RenderWindow& window); // Funkcja do rysowania zasiegu wiezy (debug)
 	// Ustawienie typu targetowania
 	bool Ulepsz();
+	//rysowanie wiezy
+	void Rysuj(sf::RenderWindow& window);
 private:
 	//lista celow- argument funkcji
 	void ZnajdzCel(const vector<Cel>& potencjalneCele);
