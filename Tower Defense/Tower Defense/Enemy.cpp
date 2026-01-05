@@ -8,6 +8,8 @@ Enemy::Enemy(int id, const std::vector<sf::Vector2f>& p, float s, int hp, const 
     sprite.setTexture(texture);
     sf::FloatRect bounds = sprite.getLocalBounds();
     sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    sprite.setScale(0.1f, 0.1f);
+
 
     // Ustawienie pozycji startowej na pierwszym punkcie œcie¿ki (wspolrzednej)
     if (!path.empty()) {
@@ -39,9 +41,7 @@ void Enemy::update(float dt) {
         sf::Vector2f velocity = (direction / distance) * speed;
         sprite.move(velocity * dt);
 
-        // Obliczanie k¹ta i rotacja postaci w stronê kierunku poruszanie siê
-        float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159f;
-        sprite.setRotation(angle);
+        
     }
 }
 
