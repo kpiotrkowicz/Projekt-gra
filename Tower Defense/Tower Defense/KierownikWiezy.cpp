@@ -77,6 +77,12 @@ void KierownikWiezy::RysujDebug(sf::RenderWindow& window) {
 		pocisk_obiekt->zasiegDebug(window);
 	}
 }
+void KierownikWiezy::reset()
+{
+	// usuñ wszystkie wie¿e
+	wieze.clear();
+	pociski.clear();
+}
 
 /*void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ_wiezy) {
 	// Tworzenie callbackow
@@ -137,16 +143,4 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 		pozycjaStartowa,
 		obrazenia,
 		callbackObrazen));
-}
-
-/*bool KierownikWiezy::UlepszWieze(int id_wiezy) {
-	// Znajdz wieze o danym ID i ulepsz jej parametry
-	for (auto& wieza_obiekt : wieze) {
-		if (wieza_obiekt.PobierzId() == id_wiezy) {
-			// Przykadowe ulepszenie: zwiekszenie zasiegu i obrazen
-			return wieza_obiekt.Ulepsz();
-		}
-	}
-	cout << "Wieza o ID: " << id_wiezy << " nie znaleziona.\n" << endl;
-	return false; // Nie znaleziono wiezy o podanym ID
 }

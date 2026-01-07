@@ -21,7 +21,7 @@ public:
 	int PobierzId() const { return id; }//pobiera unikalne id kierownika wiezy
 	sf::Vector2f PobierzPozycjeW() const { return pozycja; }
 	void PrzyznajObrazenia(int celId, float ilosc);
-	bool UlepszWieze(int id_wiezy);
+	/*bool UlepszWieze(int id_wiezy);*/
 	void UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia);
 	void reset(); //funkcja do resetowania kierownika wiezy i usuwania wszystkich wiez i pociskow
 private:
