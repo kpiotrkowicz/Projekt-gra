@@ -100,22 +100,22 @@ void KierownikWiezy::DodajWieze(sf::Vector2f pozycja, string typ) {
 
 	if (typ == "tower_1") {//wieza lucznikow ta slomiana 
 		zasieg = 220.0f;
-		obrazenia = 7.0f;
+		obrazenia = 5.0f;
 		czasOdnowienia = 0.3f;
 	}
 	else if (typ == "tower_2") {//wieza ognia ta kamienna z plomieniem 
 		zasieg = 160.0f;
-		obrazenia = 15.0f;
+		obrazenia = 8.0f;
 		czasOdnowienia = 1.8f;
 	}
 	else if (typ == "tower_3") {//wieza lodowa- krysztalowa
 		zasieg = 140.0f;
-		obrazenia = 17.0f;
+		obrazenia = 12.0f;
 		czasOdnowienia = 1.2f;
 	}
 	else if (typ == "tower_4") {//wieza magzczna zlota
 		zasieg = 190.0f;
-		obrazenia = 23.0f;
+		obrazenia = 15.0f;
 		czasOdnowienia = 2.5f;
 	}
 	wieze.emplace_back(nastepneIdWiezy++,
@@ -139,7 +139,7 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 		callbackObrazen));
 }
 
-bool KierownikWiezy::UlepszWieze(int id_wiezy) {
+/*bool KierownikWiezy::UlepszWieze(int id_wiezy) {
 	// Znajdz wieze o danym ID i ulepsz jej parametry
 	for (auto& wieza_obiekt : wieze) {
 		if (wieza_obiekt.PobierzId() == id_wiezy) {
@@ -149,4 +149,4 @@ bool KierownikWiezy::UlepszWieze(int id_wiezy) {
 	}
 	cout << "Wieza o ID: " << id_wiezy << " nie znaleziona.\n" << endl;
 	return false; // Nie znaleziono wiezy o podanym ID
-}
+}*/
