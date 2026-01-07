@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "KierownikWiezy.h"
 #include <functional>//dla funtion
 #include "zabojcacelow.h"
@@ -137,10 +138,13 @@ int main() {
 
 	string wybranyTypWiezy = "tower_1";//domyslnie wybieramy narazie wieze 1
     */
-
+    //do dziwiêku
+    
     // Konfiguracja okna wyœwietlania i limitu klatek na sekundê 
     sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense !");
     window.setFramerateLimit(60);
+    
+
 
 
     // Inicjalizacja managera przeciwników(bardzo wazne klasa dla gracza i przeciwknika, duzo sie na niej opiera logiki
@@ -193,7 +197,18 @@ int main() {
     gameOverSprite.setTexture(gameOverTexture); //ustawiamy teksture dla sprite'a
     gameOverSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
 
-    sf::FloatRect przyciskStart(450.f, 300.f, 300.f, 80.f);
+    sf::FloatRect przyciskStart(
+        524.f,          
+        642.f,          
+        997.f - 524.f,  
+        736.f - 642.f    
+    );
+    sf::FloatRect przyciskReplay(
+        520.f,          
+        570.f,          
+        1010.f - 520.f, 
+        675.f - 570.f   
+    );
 
     // Zmienne steruj¹ce stanem gry
     sf::Clock zegar;
@@ -203,8 +218,7 @@ int main() {
 
 
 
-    //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
+
 
 
     // G³ówna pêtla gry
@@ -220,6 +234,24 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
+            // Logika w trakcie gry
+            if (manager.gameOver()) {
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                    sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
+                    // sprawdzenie czy klikniêto na przycisk replay
+                    if (przyciskReplay.contains(mousePos)) {
+                        // resetowanie stanu gry
+                        graStart = false;
+                        gamePaused = false;
+                        currentWave = 0;
+                        manager.reset();
+                        kierownik_Wiezy.reset();
+                    }
+                }
+            }
+
+
             handleForgeEvent(event, manager); //obsluga kuzni
 
             // Obs³uga klawisza Escape
@@ -231,16 +263,15 @@ int main() {
             // Menu przed rozpoczêciem gry
             if (!graStart) {
                 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                    sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
                     if (przyciskStart.contains(mousePos)) {
                         graStart = true; //ustawiamy zmienna na true, aby rozpocz gre
                     }
                 }
+                continue;
             }
-            // Logika w trakcie gry
-            else if (!manager.gameOver()) {
-
-                
+        
 
 
                 if (event.type == sf::Event::KeyPressed) {
@@ -288,7 +319,7 @@ int main() {
                     }
                 }
             }
-        }
+        
 
         //aktualizacja gry gdy ta nie jest zatrzymana
         if (graStart && !gamePaused && !manager.gameOver()) {

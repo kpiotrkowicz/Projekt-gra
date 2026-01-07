@@ -53,6 +53,9 @@ public:
 
     //do testu to klikanie myszy
     void MouseClick(sf::Vector2f mousePos);
+    
+    //do replay
+    void reset();
 
 private:
     std::vector<int> spawnQueue; // Kolejka typów do spawnowania w obecnej fali

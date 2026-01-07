@@ -82,7 +82,9 @@ void EnemyManager::update(float dt) {
             spawnTimer = 0.0f;
         }
     }
+  
 
+   
     // Raportowanie stanu jednostek co sekundê 
     static float logTimer = 0;
     logTimer += dt;
@@ -155,4 +157,13 @@ void EnemyManager::MouseClick(sf::Vector2f mousePos) {
             break;
         }
     }
+}
+void EnemyManager::reset() {
+    enemies.clear();
+    spawnQueue.clear();
+    playerHealth = 1;
+    playerMoney = 100;
+    nextEnemyID = 0;
+    spawnTimer = 0.f;
+
 }

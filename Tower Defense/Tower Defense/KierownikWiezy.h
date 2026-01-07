@@ -23,6 +23,7 @@ public:
 	void PrzyznajObrazenia(int celId, float ilosc);
 	bool UlepszWieze(int id_wiezy);
 	void UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia);
+	void reset(); //funkcja do resetowania kierownika wiezy i usuwania wszystkich wiez i pociskow
 private:
 	list<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami

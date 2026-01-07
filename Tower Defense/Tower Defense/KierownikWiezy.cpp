@@ -150,3 +150,9 @@ bool KierownikWiezy::UlepszWieze(int id_wiezy) {
 	cout << "Wieza o ID: " << id_wiezy << " nie znaleziona.\n" << endl;
 	return false; // Nie znaleziono wiezy o podanym ID
 }
+//do replay
+void KierownikWiezy::reset() {
+	// usun wszystkie wieze i pociski
+	wieze.clear();
+	pociski.clear();
+}
