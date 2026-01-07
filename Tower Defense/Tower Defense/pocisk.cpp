@@ -53,8 +53,8 @@ void pocisk::Aktualizuj(float czas_delta, sf::Vector2f pozycjaCelu)
 }
 	void pocisk::zasiegDebug(sf::RenderWindow & window) const {
 		if (czy_zywy==false) return;
-		sf::CircleShape ksztalt(1.f);
-		ksztalt.setOrigin(1.f, 1.f);
+		sf::CircleShape ksztalt(3.f);
+		ksztalt.setOrigin(3.f, 3.f);
 		ksztalt.setPosition(this->pozycja);//rysuj tylko w aktualnym polozxniu pocisku
 		ksztalt.setFillColor(sf::Color::Red);
 		window.draw(ksztalt);

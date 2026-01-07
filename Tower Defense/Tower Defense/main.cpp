@@ -274,7 +274,7 @@ int main() {
         
 
 
-                if (event.type == sf::Event::KeyPressed) {
+                //if (event.type == sf::Event::KeyPressed) {
                     /*if (event.key.code == sf::Keyboard::S) {
                         for (int i = 0; i < 30; i++) {
                             int id = 100 + i;
@@ -283,10 +283,10 @@ int main() {
                         cout << "STRES test dodano 30 celow" << endl;
                     }*/
 
-                    if (event.key.code == sf::Keyboard::D) {
-                        kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
-                    }
-                }
+                   // if (event.key.code == sf::Keyboard::D) {
+                     //   kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+                    //}
+              //  }
 
 
 
