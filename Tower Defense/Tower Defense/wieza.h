@@ -57,4 +57,5 @@ private:
 	FZwrotnaObrazen przyznajObrazeniaCallback; // Callback do przyznawania obrazen
 	FUtworzPocisk utworzPociskCallback; // Callback do tworzenia pociskow
 	string typTargetowania; // Typ targetowania (np. "najblizszy", "najbardziej_zraniony")
+	sf::Text tekstPoziom;
 };
