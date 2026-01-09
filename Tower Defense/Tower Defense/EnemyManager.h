@@ -50,6 +50,8 @@ public:
 	// Zadawanie obra¿eñ przeciwnikowi o okreœlonym ID
     void damageEnemy(int id, float iloscObrazen);
 
+    //aby mozna bylo pobrac scezke 
+    const std::vector<sf::Vector2f>& getPath() const { return path; }
 
     //do testu to klikanie myszy
     void MouseClick(sf::Vector2f mousePos);
@@ -64,7 +66,7 @@ private:
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
 
 	// Zasoby gry
-	int playerMoney = 101; //pieniadze gracza
+	int playerMoney = 10021; //pieniadze gracza
 	int playerHealth = 1; //zycie gracza
 	int nextEnemyID = 0; // Unikalny identyfikator dla ka¿dego przeciwnika
 

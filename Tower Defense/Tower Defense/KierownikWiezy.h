@@ -27,6 +27,8 @@ public:
 	void UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia);
 	void reset(); //funkcja do resetowania kierownika wiezy i usuwania wszystkich wiez i pociskow
 	void ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manager, bool czyUlepszyc );
+
+	bool kolizjaWiezy(sf::Vector2f pozycja, float promienBlokady) const;
 private:
 	list<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami

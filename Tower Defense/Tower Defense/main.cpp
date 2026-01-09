@@ -159,120 +159,124 @@ int main() {
 
 
     // SYSTEM WIE¯ 
-
-    FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
-	FUtworzPocisk callbackStworzPocisk = Stworzpocisk;
-
-    //przekazanie callbacka do kierownika wiezy
-    KierownikWiezy kierownik_Wiezy(callbackObrazen,callbackStworzPocisk);
-	g_kierownikWiezy = &kierownik_Wiezy; // Przypisanie do wskaŸnika globalnego dla callbacku
-
-    /*mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
-    mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
-    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));*/
-
-    //stawiam pare wiez testowych(pozycja,typ)
-    //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-    //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
-
-
     
-    // SYSTEM GRY 
-    
-    // Inicjalizacja elementów sceny
-    initForge(window); //inicjalizuje kuznie
-    initHUD(); // inicjalizuje HUD
-    loadMapa(); // laduje mape
+        FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
+        FUtworzPocisk callbackStworzPocisk = Stworzpocisk;
 
-    // Za³adowanie tekstur menu i game over 
-    sf::Texture menuTexture; //tekstura przechowujaca grafike menu
-    sf::Sprite menuSprite; //sprite odpowiedzialny za rysowanie grafiki
-    menuTexture.loadFromFile("../Assets/menu/menu.png"); //ladujemy grafike menu
-    menuSprite.setTexture(menuTexture); //ustawiamy teksture dla sprite'a
-    menuSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
+        //przekazanie callbacka do kierownika wiezy
+        KierownikWiezy kierownik_Wiezy(callbackObrazen, callbackStworzPocisk);
 
-    sf::Texture gameOverTexture; //tekstura przechowujaca grafike game over
-    sf::Sprite gameOverSprite; //sprite odpowiedzialny za rysowanie grafiki
-    gameOverTexture.loadFromFile("../Assets/gameover/gameover.png"); //ladujemy grafike menu
-    gameOverSprite.setTexture(gameOverTexture); //ustawiamy teksture dla sprite'a
-    gameOverSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
+        g_kierownikWiezy = &kierownik_Wiezy; // Przypisanie do wskaŸnika globalnego dla callbacku
 
-    sf::FloatRect przyciskStart(
-        524.f,          
-        642.f,          
-        997.f - 524.f,  
-        736.f - 642.f    
-    );
-    sf::FloatRect przyciskReplay(
-        520.f,          
-        570.f,          
-        1010.f - 520.f, 
-        675.f - 570.f   
-    );
+        /*mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
+        mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
+        mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));*/
 
-    // Zmienne steruj¹ce stanem gry
-    sf::Clock zegar;
-    int currentWave = 0;
-    bool graStart = false; //zmienna sprawdzajaca czy gra zostala ropoczeta
-    bool gamePaused = false;
+        //stawiam pare wiez testowych(pozycja,typ)
+        //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
+        //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
 
 
 
+        // SYSTEM GRY 
+
+        // Inicjalizacja elementów sceny
+        initForge(window); //inicjalizuje kuznie
+        initHUD(); // inicjalizuje HUD
+        loadMapa(); // laduje mape
+
+        // Za³adowanie tekstur menu i game over 
+        sf::Texture menuTexture; //tekstura przechowujaca grafike menu
+        sf::Sprite menuSprite; //sprite odpowiedzialny za rysowanie grafiki
+        menuTexture.loadFromFile("../Assets/menu/menu.png"); //ladujemy grafike menu
+        menuSprite.setTexture(menuTexture); //ustawiamy teksture dla sprite'a
+        menuSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
+
+        sf::Texture gameOverTexture; //tekstura przechowujaca grafike game over
+        sf::Sprite gameOverSprite; //sprite odpowiedzialny za rysowanie grafiki
+        gameOverTexture.loadFromFile("../Assets/gameover/gameover.png"); //ladujemy grafike menu
+        gameOverSprite.setTexture(gameOverTexture); //ustawiamy teksture dla sprite'a
+        gameOverSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
+
+        sf::FloatRect przyciskStart(
+            524.f,
+            642.f,
+            997.f - 524.f,
+            736.f - 642.f
+        );
+        sf::FloatRect przyciskReplay(
+            520.f,
+            570.f,
+            1010.f - 520.f,
+            675.f - 570.f
+        );
+
+        // Zmienne steruj¹ce stanem gry
+        sf::Clock zegar;
+        int currentWave = 0;
+        bool graStart = false; //zmienna sprawdzajaca czy gra zostala ropoczeta
+        bool gamePaused = false;
 
 
 
-    // G³ówna pêtla gry
-    while (window.isOpen()) {
-        sf::Event event;
-        //float dt = zegar.restart().asSeconds();
-       
-        //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki (dla wie¿)
-        float czasDelta = zegar.restart().asSeconds();
 
-        // Obs³uga zdarzeñ systemowych (zamkniêcie okna, sterowanie)
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
 
-            // Logika w trakcie gry
-            if (manager.gameOver()) {
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-                    sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
-                    // sprawdzenie czy klikniêto na przycisk replay
-                    if (przyciskReplay.contains(mousePos)) {
-                        // resetowanie stanu gry
-                        graStart = false;
-                        gamePaused = false;
-                        currentWave = 0;
-                        manager.reset();
-                        kierownik_Wiezy.reset();
+
+        // G³ówna pêtla gry
+        while (window.isOpen()) {
+            sf::Event event;
+            //float dt = zegar.restart().asSeconds();
+
+            //trzeba pobrac czas ktory uplynal od ostatniego momnetu/klatki (dla wie¿)
+            float czasDelta = zegar.restart().asSeconds();
+
+            // Obs³uga zdarzeñ systemowych (zamkniêcie okna, sterowanie)
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    g_kierownikWiezy = nullptr;
+                    g_enemyManager = nullptr;
+                    window.close();
+                    break;
+                }
+                // Logika w trakcie gry
+                if (manager.gameOver()) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                        sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                        sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
+                        // sprawdzenie czy klikniêto na przycisk replay
+                        if (przyciskReplay.contains(mousePos)) {
+                            // resetowanie stanu gry
+                            graStart = false;
+                            gamePaused = false;
+                            currentWave = 0;
+                            manager.reset();
+                            kierownik_Wiezy.reset();
+                        }
                     }
                 }
-            }
 
 
-            handleForgeEvent(event, manager); //obsluga kuzni
+                handleForgeEvent(event, manager); //obsluga kuzni
 
-            // Obs³uga klawisza Escape
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                graStart = false;
-                // gameOver = false; // Logika gameOver jest teraz pobierana z managera
-            }
-
-            // Menu przed rozpoczêciem gry
-            if (!graStart) {
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-                    sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
-                    if (przyciskStart.contains(mousePos)) {
-                        graStart = true; //ustawiamy zmienna na true, aby rozpocz gre
-                        continue;
-                    }
+                // Obs³uga klawisza Escape
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    graStart = false;
+                    // gameOver = false; // Logika gameOver jest teraz pobierana z managera
                 }
-                continue;
-            }
-        
+
+                // Menu przed rozpoczêciem gry
+                if (!graStart) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                        sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                        sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
+                        if (przyciskStart.contains(mousePos)) {
+                            graStart = true; //ustawiamy zmienna na true, aby rozpocz gre
+                            continue;
+                        }
+                    }
+                    continue;
+                }
+
 
 
                 //if (event.type == sf::Event::KeyPressed) {
@@ -284,25 +288,25 @@ int main() {
                         cout << "STRES test dodano 30 celow" << endl;
                     }*/
 
-                   // if (event.key.code == sf::Keyboard::D) {
-                     //   kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
-                    //}
-              //  }
+                    // if (event.key.code == sf::Keyboard::D) {
+                      //   kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
+                     //}
+               //  }
 
 
 
 
-                // do testu, zadanie obrazen przyciskiem myszy
-                // tu bedzie zmiana na wieze
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    // pozycja myszy wzglêdem okna
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-                    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-					kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager, true);//sprawdzamy czy kliknieto na wieze i czy ulepszac
-                    
-                    // funkcja zadawania obra¿eñ MYSZY!!!
-                    manager.MouseClick(worldPos);
-                }
+                 // do testu, zadanie obrazen przyciskiem myszy
+                 // tu bedzie zmiana na wieze
+                //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                //    // pozycja myszy wzglêdem okna
+                //    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                //    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+                //    kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager, true);//sprawdzamy czy kliknieto na wieze i czy ulepszac
+
+                //    // funkcja zadawania obra¿eñ MYSZY!!!
+                //    manager.MouseClick(worldPos);
+                //}
 
                 // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
@@ -321,59 +325,61 @@ int main() {
                     }
                 }
             }
-        
 
-        //aktualizacja gry gdy ta nie jest zatrzymana
-        if (graStart && !gamePaused && !manager.gameOver()) {
-            manager.update(czasDelta);
 
-            // AKTUALIZACJA WIE¯  
-            //zrobienie listy celow na podstawie mapy wrogow
-            vector<Cel> aktualna_lista_celow = StworzListeCelow(manager);
+            //aktualizacja gry gdy ta nie jest zatrzymana
+            if (graStart && !gamePaused && !manager.gameOver()) {
+                manager.update(czasDelta);
 
-            //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
-            kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
+                // AKTUALIZACJA WIE¯  
+                //zrobienie listy celow na podstawie mapy wrogow
+                vector<Cel> aktualna_lista_celow = StworzListeCelow(manager);
 
-            //usuwamy pokonane cele z mapy
-            //usunpokonanecele();
+                //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
+                kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
+
+                //usuwamy pokonane cele z mapy
+                //usunpokonanecele();
+            }
+
+            // Rysowanie sceny
+            window.clear(sf::Color(20, 20, 30)); // Kolor t³a z 
+
+            if (!graStart) {
+                window.draw(menuSprite); //rysuje menu
+            }
+            else if (manager.gameOver()) {
+                window.draw(gameOverSprite); // Wyœwietlenie ekranu koñca gry
+            }
+            else {
+                // Rysowanie aktywnej rozgrywki
+                renderMapa(window); //rysuje mape
+
+                // Rysowanie przeciwników i logiki
+                manager.draw(window);
+
+                // --- RYSOWANIE WIE¯ I CELÓW TESTOWYCH (Z Kodu 1) ---
+                // Rysowanie  pociskow (debug)
+                /*for (const auto& para : mapa_wrogow) {
+                    sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
+                    ksztaltCelu.setOrigin(10.f, 10.f);
+                    ksztaltCelu.setPosition(para.second.pozycja);
+                    ksztaltCelu.setFillColor(sf::Color::Green);
+                    window.draw(ksztaltCelu);
+                }*/
+
+                // Rysowanie  pociskow
+                kierownik_Wiezy.RysujDebug(window);
+
+                rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
+                rysujForge(window, manager); //rysuje kuznie 
+            }
+
+            window.display();
         }
-
-        // Rysowanie sceny
-        window.clear(sf::Color(20, 20, 30)); // Kolor t³a z 
-
-        if (!graStart) {
-            window.draw(menuSprite); //rysuje menu
-        }
-        else if (manager.gameOver()) {
-            window.draw(gameOverSprite); // Wyœwietlenie ekranu koñca gry
-        }
-        else {
-            // Rysowanie aktywnej rozgrywki
-            renderMapa(window); //rysuje mape
-
-            // Rysowanie przeciwników i logiki
-            manager.draw(window);
-
-            // --- RYSOWANIE WIE¯ I CELÓW TESTOWYCH (Z Kodu 1) ---
-            // Rysowanie  pociskow (debug)
-            /*for (const auto& para : mapa_wrogow) {
-                sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
-                ksztaltCelu.setOrigin(10.f, 10.f);
-                ksztaltCelu.setPosition(para.second.pozycja);
-                ksztaltCelu.setFillColor(sf::Color::Green);
-                window.draw(ksztaltCelu);
-            }*/
-
-            // Rysowanie  pociskow
-            kierownik_Wiezy.RysujDebug(window);
-
-            rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
-            rysujForge(window, manager); //rysuje kuznie 
-        }
-
-        window.display();
-    }
-
+    
+    g_kierownikWiezy = nullptr;
+    g_enemyManager = nullptr;
     return 0;
 }
 

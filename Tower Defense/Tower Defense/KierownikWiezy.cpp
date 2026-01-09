@@ -179,3 +179,20 @@ void KierownikWiezy::ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manag
 		}
 	}
 }
+
+bool KierownikWiezy::kolizjaWiezy(sf::Vector2f pozycja, float promienBlokady) const
+{
+	for (const auto& w : wieze) {
+		sf::Vector2f posWiezy = w.PobierzPozycje(); 
+
+		float dx = pozycja.x - posWiezy.x;
+		float dy = pozycja.y - posWiezy.y;
+		float dystansKwadrat = (dx * dx) + (dy * dy);
+
+		//czy nowa wie¿a nie jest zbyt blisko postawionej
+		if (dystansKwadrat < (promienBlokady * promienBlokady)) {
+			return true; // Jest kolizja
+		}
+	}
+	return false; // Brak kolizji
+}

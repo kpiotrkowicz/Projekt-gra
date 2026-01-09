@@ -1,7 +1,8 @@
 #include "forge.h"
 #include "KierownikWiezy.h"
 #include <vector>
-#include<string>
+#include <string>
+#include <cmath>
 
 extern KierownikWiezy* g_kierownikWiezy;
 //tu chodzi o wybor wiez scrollem
@@ -56,6 +57,16 @@ void initForge(sf::RenderWindow& window) {
 	}
 }
 	
+float dystansPunktuOdOdcinka(sf::Vector2f p, sf::Vector2f a, sf::Vector2f b) {
+	sf::Vector2f ab = b - a;
+	sf::Vector2f ap = p - a;
+	float dlugoscKwadrat = ab.x * ab.x + ab.y * ab.y;
+	if (dlugoscKwadrat == 0.0f) return std::sqrt(ap.x * ap.x + ap.y * ap.y);
+	float t = std::max(0.0f, std::min(1.0f, (ap.x * ab.x + ap.y * ab.y) / dlugoscKwadrat));
+	sf::Vector2f najblizszy = a + ab * t;
+	sf::Vector2f diff = p - najblizszy;
+	return std::sqrt(diff.x * diff.x + diff.y * diff.y);
+}
 
 
 void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
@@ -80,25 +91,46 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 		//kupno wiezy
 		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
 			if (manager.getPlayerMoney() >= cenaWiezy[wybranaWieza]) {
-				
+
 				sf::Vector2f mousePos(
 					static_cast<float>(event.mouseButton.x),
 					static_cast<float>(event.mouseButton.y)
 				);
-				if (mousePos.y < (1024 - 250.f)) {//1024 wysokosc okna - wysokosc 
-					manager.moneySum(-cenaWiezy[wybranaWieza]); //odejmij pieniadze
-					std::string typy[] = { "tower_1","tower_2","tower_3","tower_4" };
-					if (g_kierownikWiezy) 
-					
-					{
-						g_kierownikWiezy->DodajWieze(mousePos, typy[wybranaWieza]);
-					};
-				}
+				if (g_kierownikWiezy != nullptr) {
+					if (mousePos.y < (1024 - 50.f) && mousePos.y >(150.f)) {//abye nie mozna bylo postaiwc za wysoko lub za nisko 
+						float marginesDrogi = 60.0f;
+						float marginesWiezy = 60.0f;
 
-				
-				//tu potem ma byc stawianie wiezy!!!!
+						bool kolizjaDroga = false;
+						const auto& sciezka = manager.getPath(); //funkcja z EnemyManager.h
+						for (size_t i = 0; i < sciezka.size() - 1; ++i) {
+							if (dystansPunktuOdOdcinka(mousePos, sciezka[i], sciezka[i + 1]) < marginesDrogi) {
+								kolizjaDroga = true;
+								break;
+							}
+						}
+						bool kolizjaInnaWieza = false;
+						if (g_kierownikWiezy && g_kierownikWiezy->kolizjaWiezy(mousePos, marginesWiezy)) {
+							kolizjaInnaWieza = true;
+						}
+
+
+						if (!kolizjaDroga && !kolizjaInnaWieza) {
+							manager.moneySum(-cenaWiezy[wybranaWieza]); //odejmij pieniadze
+							std::string typy[] = { "tower_1","tower_2","tower_3","tower_4" };
+							if (g_kierownikWiezy)
+
+							{
+								g_kierownikWiezy->DodajWieze(mousePos, typy[wybranaWieza]);
+							};
+						}
+						else {
+							std::cout << "Nie mozna budowac na drodze!" << std::endl;
+						}
+					}
+				}
 			}
-	}
+		}
 	}
 
 	void rysujForge(sf::RenderWindow& window, EnemyManager& manager){
@@ -123,8 +155,6 @@ void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
 
 			window.draw(towerSprite[i]);
 			window.draw(cenaTekst[i]);
-	
-			window.draw(towerSprite[i]);
 		}
 	
 	}
