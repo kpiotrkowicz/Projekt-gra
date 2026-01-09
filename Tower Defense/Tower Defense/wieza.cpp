@@ -150,10 +150,28 @@ bool wieza::Ulepsz()
 {
 	if (poziom < MAKSYMPOZIOM)
 	{
-		poziom++;
-		zasieg *= 1.5f; // Zwieksz zasieg o 20%
-		obrazenia *= 1.5f; // Zwieksz obrazenia o 50%
+		poziom += 1;
+		
+		zasieg *= 1.15f; // Zwieksz zasieg o 15%
+		obrazenia *= 1.3f; // Zwieksz obrazenia o 30%
 		czasOdnowienia *= 0.9f; // Zmniejsz czas odnowienia o 10%
+		cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
+		return true;
+	}
+	else
+	{
+		cout << "Wieza " << id << " jest juz na maksymalnym poziomie!" << endl;
+		return false;
+	}
+}
+bool wieza::ZmniejszPoziom()
+{
+	if (poziom>1)
+	{
+		poziom-=1;
+		zasieg /= 1.15f; // Zwieksz zasieg o 15%
+		obrazenia /= 1.3f; // Zwieksz obrazenia o 30%
+		czasOdnowienia /= 0.9f; // Zmniejsz czas odnowienia o 10%
 		cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
 		return true;
 	}

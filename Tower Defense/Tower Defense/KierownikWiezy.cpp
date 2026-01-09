@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include <algorithm>//zebysmy mogli usuwac pociski z wektora
+#include "EnemyManager.h"
 using namespace std;
 using namespace std::placeholders;
 
@@ -143,4 +144,38 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 		pozycjaStartowa,
 		obrazenia,
 		callbackObrazen));
+}
+
+void KierownikWiezy::ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manager, bool czyUlepszyc)
+{
+	for (auto& w : wieze) {
+		if (w.czyKliknieto(mousePos)) {
+			if (czyUlepszyc) {
+				int koszt = 100 * w.dajPoziom();
+				if (manager.getPlayerMoney() >= koszt) {
+					if (w.Ulepsz()) {
+						manager.moneySum(-koszt);
+						cout << "Ulepszono wieze o ID: " << w.PobierzId() << " do poziomu " << w.dajPoziom() << endl;
+					}
+					else {
+						cout << "Wieza o ID: " << w.PobierzId() << " jest juz na maksymalnym poziomie." << endl;
+					}
+				}
+				else {
+					cout << "Brak wystarczajacych srodkow na ulepszenie wiezy o ID: " << w.PobierzId() << endl;
+				}
+			}
+			else {
+
+				if (w.ZmniejszPoziom()) {
+					int zwrot = 50 * w.dajPoziom();
+					manager.moneySum(zwrot);
+					cout << "Zmniejszono poziom wiezy o ID: " << w.PobierzId() << " do poziomu " << w.dajPoziom() << ". Zwrot: " << zwrot << endl;
+				}
+				else {
+					cout << "Wieza o ID: " << w.PobierzId() << " jest na najnizszym poziomie." << endl;
+				}
+			}
+		}
+	}
 }

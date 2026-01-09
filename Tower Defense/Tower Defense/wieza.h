@@ -28,11 +28,20 @@ class wieza {
 	void zasiegDebug(sf::RenderWindow& window); // Funkcja do rysowania zasiegu wiezy (debug)
 	// Ustawienie typu targetowania
 	bool Ulepsz();
+	bool ZmniejszPoziom();
+	int dajPoziom() const { 
+		return poziom; 
+	}
+	bool czyKliknieto(sf::Vector2f mousePos) const {
+		
+		return sprite.getGlobalBounds().contains(mousePos);
+	}
 private:
 	//lista celow- argument funkcji
 	void ZnajdzCel(const vector<Cel>& potencjalneCele);
 	void Strzel();
-	int poziom;
+	int poziom=1;
+	static const int MAKSYMPOZIOM = 5;
 	int id; // Unikalne ID wiezy
 	sf::Vector2f pozycja; // Pozycja wiezy
 	sf::Texture tekstura;
