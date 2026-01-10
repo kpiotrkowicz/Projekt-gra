@@ -36,6 +36,7 @@ public:
     bool isClicked(sf::Vector2f mousePos) const {
         return sprite.getGlobalBounds().contains(mousePos);
     }
+    void drawHearts(sf::RenderWindow& window);//do ryrowania serc
 
 
     int id; // Unikalny identyfikator przeciwnika
@@ -50,6 +51,13 @@ private:
     sf::Sprite sprite;      // Obiekt graficzny reprezentuj¹cy przeciwnika
     float speed;            // Szybkoœæ poruszania siê jednostki
     int currentHp;          // Aktualny stan zdrowia
+	int maxHp; // Maksymalny stan zdrowia
+
+    // Wspólna tekstura serca wspó³dzielona przez wszystkie instancje Enemy
+    static sf::Texture sharedHeartTexture;
+    static bool sharedHeartTextureLoaded;
+
+    sf::Sprite heartSprite;   // Sprite serca
     bool hasReachedEnd = false; // Flaga informuj¹ca o dotarciu do koñca trasy
 	int money;		  // Nagroda pieniê¿na za pokonanie przeciwnika
 	int demage;      // Obra¿enia zadawane graczowi po dotarciu do koñca trasy

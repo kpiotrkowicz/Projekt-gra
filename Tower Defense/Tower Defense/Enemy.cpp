@@ -1,8 +1,12 @@
 #include "Enemy.h"
 #include <cmath>
 
+// Definicje statycznych pól
+sf::Texture Enemy::sharedHeartTexture;
+bool Enemy::sharedHeartTextureLoaded = false;
+
 Enemy::Enemy(int id, const std::vector<sf::Vector2f>& p, float s, int hp, const sf::Texture& texture, int m, int d)
-    : id(id), path(p), speed(s), currentHp(hp), hasReachedEnd(false), money(m), demage(d)
+    : id(id), path(p), speed(s), currentHp(hp), maxHp(hp), hasReachedEnd(false), money(m), demage(d)
 {
     // Przypisanie tekstury i ustawienie punktu obrotu na œrodek grafiki
     sprite.setTexture(texture);
@@ -15,6 +19,22 @@ Enemy::Enemy(int id, const std::vector<sf::Vector2f>& p, float s, int hp, const 
     if (!path.empty()) {
         sprite.setPosition(path[0]);
         currentPointIndex = 1;
+    }
+
+    // Wczytaj teksturê serca raz (jeœli jeszcze nie wczytano) i ustaw sprite
+    if (!Enemy::sharedHeartTextureLoaded) {
+        if (Enemy::sharedHeartTexture.loadFromFile("../Assets/enemy/heart.png")) {
+            Enemy::sharedHeartTextureLoaded = true;
+        }
+        else {
+            // Niepowodzenie wczytania — mo¿esz dodaæ logowanie tutaj
+            Enemy::sharedHeartTextureLoaded = false;
+        }
+    }
+
+    if (Enemy::sharedHeartTextureLoaded) {
+        heartSprite.setTexture(Enemy::sharedHeartTexture);
+        heartSprite.setScale(0.05f, 0.05f);
     }
 }
 
@@ -48,4 +68,32 @@ void Enemy::update(float dt) {
 void Enemy::draw(sf::RenderWindow& window) {
     // Wyœwietlenie grafiki przeciwnika w oknie
     window.draw(sprite);
+    drawHearts(window);
+}
+void Enemy::drawHearts(sf::RenderWindow& window)
+{
+    if (isDead()) return;
+
+    float hpPercent = (float)currentHp / (float)maxHp;
+
+    int heartsToDraw = 0;
+
+    if (hpPercent > 0.66f) {
+        heartsToDraw = 3;
+    }
+    else if (hpPercent > 0.33f) {
+        heartsToDraw = 2;
+    }
+    else if (hpPercent > 0.0f) {
+        heartsToDraw = 1;
+    }
+
+    sf::Vector2f pos = sprite.getPosition();
+    float startX = pos.x - (heartsToDraw * 10.f) / 2.f;
+    float y = pos.y - 30.f;
+
+    for (int i = 0; i < heartsToDraw; i++) {
+        heartSprite.setPosition(startX + i * 10.f, y);
+        window.draw(heartSprite);
+    }
 }
