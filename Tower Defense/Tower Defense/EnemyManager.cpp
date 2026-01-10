@@ -6,6 +6,7 @@ EnemyManager::EnemyManager() {
     if (!texStandard.loadFromFile("../Assets/enemy/w1.png")) { /* na koncu  do zrobienia obluga bledu bo program sie wykrzacza sam jak jest cos zle */ }
     if (!tex2.loadFromFile("../Assets/enemy/w2.png")) { /* do ob³sugi b³êdu */ }
     if (!tank.loadFromFile("../Assets/enemy/w3.png")) {}
+    if (!boss.loadFromFile("../Assets/enemy/w4.png")) {}
 }
 
 //Jak ta oblsuga nie bedzie dzialac to mozna optymistycznie zalozyc ze pliki sa zawsze dostepne 
@@ -25,8 +26,8 @@ void EnemyManager::spawnEnemy(int type) {
     if (path.empty()) return;
 
     // Definiowanie domyœlnych statystyk przeciwnika
-    float speed = 80.f;
-    int hp = 100;
+    float speed = 150.f;
+    int hp = 50;
     int reward = 10;
     int demage = 1;
     sf::Texture* selectedTexture = &texStandard;
@@ -34,18 +35,25 @@ void EnemyManager::spawnEnemy(int type) {
     // parametry przeciwnikow
     switch (type) {
     case 1: // Typ 1
-        speed = 150.f;
+        speed = 200.f;
         hp = 50;
         reward = 20;
         selectedTexture = &tex2;
-        demage = 1;
+        demage = 2;
         break;
     case 2: // Typ2 
         speed = 40.f;
         hp = 300;
         reward = 30;
         selectedTexture = &tank;
-        demage = 2;
+        demage = 5;
+        break;
+    case 3: // Boss 
+        speed = 50.f;
+        hp = 700;
+        reward = 200;
+        selectedTexture = &boss;
+        demage = 50;
         break;
     }
 
@@ -147,21 +155,21 @@ void EnemyManager::damageEnemy(int id, float iloscObrazen) {
 }
 
 
-void EnemyManager::MouseClick(sf::Vector2f mousePos) {
-    for (auto& enemy : enemies) {
-        if (enemy.isClicked(mousePos)) {
-            enemy.takeDamage(50); //50 obrazen przy klikniêciu
-            std::cout << "[HIT] Potwor oberwal! Pozostalo HP: " << enemy.getHp() << std::endl;
-
-            //aby jedno klikniêcie trafia jednego wroga
-            break;
-        }
-    }
-}
+//void EnemyManager::MouseClick(sf::Vector2f mousePos) {
+//    for (auto& enemy : enemies) {
+//        if (enemy.isClicked(mousePos)) {
+//            enemy.takeDamage(50); //50 obrazen przy klikniêciu
+//            std::cout << "[HIT] Potwor oberwal! Pozostalo HP: " << enemy.getHp() << std::endl;
+//
+//            //aby jedno klikniêcie trafia jednego wroga
+//            break;
+//        }
+//    }
+//}
 void EnemyManager::reset() {
     enemies.clear();
     spawnQueue.clear();
-    playerHealth = 1;
+    playerHealth = 50;
     playerMoney = 100;
     nextEnemyID = 0;
     spawnTimer = 0.f;

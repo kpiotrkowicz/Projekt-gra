@@ -298,15 +298,15 @@ int main() {
 
                  // do testu, zadanie obrazen przyciskiem myszy
                  // tu bedzie zmiana na wieze
-                //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                //    // pozycja myszy wzglêdem okna
-                //    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-                //    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-                //    kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager, true);//sprawdzamy czy kliknieto na wieze i czy ulepszac
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    // pozycja myszy wzglêdem okna
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+                    kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager, true);//sprawdzamy czy kliknieto na wieze i czy ulepszac
 
                 //    // funkcja zadawania obra¿eñ MYSZY!!!
                 //    manager.MouseClick(worldPos);
-                //}
+                }
 
                 // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
@@ -387,27 +387,23 @@ WaveConfig getWaveSettings(int waveNumber) {//scenariusze fali
     WaveConfig config;
     config.delay = std::max(0.3f, 1.0f - (waveNumber * 0.05f));
 
-    int totalEnemies = 5 + (waveNumber * 2);
+    int totalEnemies = 1 + (waveNumber*2);//ilu przeciwnikow ma byc w fali
 
     for (int i = 0; i < totalEnemies; i++) {
-        if (i % 3 == 0 && waveNumber >= 3) { //co trzeci przeciwnik to typ 1 od rundy 3
+        if (waveNumber % 5 == 0) { //boss
+            config.kolejnoscEnemies.push_back(3);
+            break;
+        }
+        else if (i % 3 == 0 && waveNumber >= 3) { //co trzeci przeciwnik to typ 1 od rundy 3
             config.kolejnoscEnemies.push_back(1);
         }
         else if (i % 4 == 0 && waveNumber >= 3) { // runda 4, 8, 15 itd 
-            //niby mozna samego if ale chyba tworzy sie za duzo przeciwnikow
+            //niby mozna samego if ale chyba tworzy sie za duzo przeciwnikow           
             config.kolejnoscEnemies.push_back(2);
         }
         else {
             config.kolejnoscEnemies.push_back(0); //reszta to typ standardowy
         }
-    }
-
-    //system bossa
-    // Na koniec fali co 5 rund dodaj bossa tutaj typ 2
-    //tylko tworza sie teraz tez inne potwory
-    if (waveNumber % 5 == 0) {
-        config.kolejnoscEnemies.push_back(2);
-    }
-
+    } 
     return config;
 }

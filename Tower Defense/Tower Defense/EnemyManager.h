@@ -54,7 +54,7 @@ public:
     const std::vector<sf::Vector2f>& getPath() const { return path; }
 
     //do testu to klikanie myszy
-    void MouseClick(sf::Vector2f mousePos);
+    //void MouseClick(sf::Vector2f mousePos);
     
     //do replay
     void reset();
@@ -66,8 +66,8 @@ private:
     std::vector<sf::Vector2f> path; // Kopia œcie¿ki poruszania siê
 
 	// Zasoby gry
-	int playerMoney = 10021; //pieniadze gracza
-	int playerHealth = 1; //zycie gracza
+	int playerMoney = 100; //pieniadze gracza
+	int playerHealth = 50; //zycie gracza
 	int nextEnemyID = 0; // Unikalny identyfikator dla ka¿dego przeciwnika
 
     // Zmienne steruj¹ce mechanik¹ fal
@@ -80,4 +80,5 @@ private:
     sf::Texture texStandard;
     sf::Texture tex2;
     sf::Texture tank;
+    sf::Texture boss;
 };
