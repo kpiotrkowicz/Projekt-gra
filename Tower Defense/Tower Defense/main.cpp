@@ -263,6 +263,17 @@ int main() {
                     graStart = false;
                     // gameOver = false; // Logika gameOver jest teraz pobierana z managera
                 }
+				// Obs³uga klikniêæ myszy podczas gry 10.01.2026
+                if (graStart && !manager.gameOver()) {
+					if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+						sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+						sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+
+						//funkcja obsluz klikniecie zebysmy mogli sobie klikaæ na wieze i ulepszac je i zmniejszac jej poziom
+						kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager);
+                    }
+
+                }
 
                 // Menu przed rozpoczêciem gry
                 if (!graStart) {
@@ -307,6 +318,7 @@ int main() {
                 //    // funkcja zadawania obra¿eñ MYSZY!!!
                 //    manager.MouseClick(worldPos);
                 //}
+
 
                 // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {

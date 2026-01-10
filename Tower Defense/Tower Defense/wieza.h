@@ -58,4 +58,7 @@ private:
 	FUtworzPocisk utworzPociskCallback; // Callback do tworzenia pociskow
 	string typTargetowania; // Typ targetowania (np. "najblizszy", "najbardziej_zraniony")
 	//sf::Text tekstPoziom;
+	sf::Texture teksturyPoziomow[MAKSYMPOZIOM]; // Tekstury dla kazdego poziomu wiezy
+	sf::Sprite spritePoziom; // Sprite do wyswietlania poziomu wiezy
+	void aktualizujWygladPoziomu(); // Funkcja do aktualizacji wygladu wiezy w zaleznosci od poziomu
 };

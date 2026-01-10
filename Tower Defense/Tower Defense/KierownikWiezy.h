@@ -26,10 +26,21 @@ public:
 	/*bool UlepszWieze(int id_wiezy);*/
 	void UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia);
 	void reset(); //funkcja do resetowania kierownika wiezy i usuwania wszystkich wiez i pociskow
-	void ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manager, bool czyUlepszyc );
+	void ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manager );
 
 	bool kolizjaWiezy(sf::Vector2f pozycja, float promienBlokady) const;
 private:
+
+	sf::Texture teksturaMenuUlepszen; //tekstura ikony ulepszenia wiezy
+	sf::Sprite spriteMenuUlepszen; //sprite ikony ulepszenia wiezy
+	wieza* wybranaWieza = nullptr; //wskaznik na wybrana wieze do ulepszenia
+	bool menuWidoczne = false; //czy menu ulepszen jest widoczne
+
+
+	///////////////////////////// tutaj na gorze  to co dodaje teraz 10.01
+
+
+
 	list<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami
 	vector<unique_ptr<pocisk>> pociski; //lista pociskow zarzadzana przez kierownika wiezy
@@ -37,7 +48,7 @@ private:
 	int nastepneIdWiezy = 1; //unikalne id dla wiez
 	int nastepneIdPocisku = 1; //unikalne id dla pociskow
 	FZwrotnaObrazen zewnetrznyCallbackObrazen;
-	int id; //unikalne id kierownika wiezy
+	int id=0; //unikalne id kierownika wiezy
 	sf::Vector2f pozycja; //pozycja kierownika wiezy na mapie
 	//callbacki- funckje zwrotne do przekazania do wiez i pociskow
 	

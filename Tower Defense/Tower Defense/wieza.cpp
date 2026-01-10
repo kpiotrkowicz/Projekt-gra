@@ -27,7 +27,25 @@ wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float 
 		sprite.setScale(skala, skala);
 	}
 	cout << "Wieza utworzona o ID: " << id << " na pozycji (" << pozycja.x << ", " << pozycja.y << ")\n"<<endl;
+	for (int i = 0; i < MAKSYMPOZIOM; ++i) {
+		string sciezka = "../Assets/hud/lvl_" + to_string(i + 1) + ".png";
+		if (!teksturyPoziomow[i].loadFromFile(sciezka)) {
+			cout << "Nie mozna zaladowac tekstury poziomu: " << sciezka << endl;
+		}
+	}
+	spritePoziom.setTexture(teksturyPoziomow[0]);
+	float skala = 60.f / spritePoziom.getLocalBounds().width; // Przyk³adowa skala
+	spritePoziom.setScale(skala, skala);
+
+	sf::FloatRect bounds = spritePoziom.getLocalBounds();
+	spritePoziom.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+	cout << "Wieza poziom " << poziom << " ustawiona.\n" << endl;
+
 }
+
+
+
 //Aktualizacja wiezy wywolywana w kazdej klatce gry przez kierownika wie¿y
 
 void wieza::Aktualizuj(float czasDelta, const vector<Cel>& potencjalneCele)
@@ -141,9 +159,13 @@ void wieza::zasiegDebug(sf::RenderWindow& window)
 	okrag.setFillColor(sf::Color(100, 100, 100, 50)); // Przezroczyste w srodku
 	okrag.setOrigin(zasieg, zasieg); // Ustawienie srodka okregu
 	okrag.setPosition(pozycja); // Ustawienie pozycji na srodek wiezy
-	window.draw(okrag);
+	//window.draw(okrag);
 
 	window.draw(sprite);
+
+	//ikona poziomu obok wiezy
+	spritePoziom.setPosition(pozycja.x + 40.f, pozycja.y - 20.f);
+	window.draw(spritePoziom);
 }
 
 bool wieza::Ulepsz()
@@ -151,7 +173,7 @@ bool wieza::Ulepsz()
 	if (poziom < MAKSYMPOZIOM)
 	{
 		poziom += 1;
-		
+		spritePoziom.setTexture(teksturyPoziomow[poziom - 1]);
 		zasieg *= 1.15f; // Zwieksz zasieg o 15%
 		obrazenia *= 1.3f; // Zwieksz obrazenia o 30%
 		czasOdnowienia *= 0.9f; // Zmniejsz czas odnowienia o 10%
@@ -169,6 +191,7 @@ bool wieza::ZmniejszPoziom()
 	if (poziom>1)
 	{
 		poziom-=1;
+		spritePoziom.setTexture(teksturyPoziomow[poziom - 1]);
 		zasieg /= 1.15f; // Zwieksz zasieg o 15%
 		obrazenia /= 1.3f; // Zwieksz obrazenia o 30%
 		czasOdnowienia /= 0.9f; // Zmniejsz czas odnowienia o 10%

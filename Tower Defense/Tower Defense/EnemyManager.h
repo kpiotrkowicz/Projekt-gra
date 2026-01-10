@@ -5,7 +5,8 @@
 struct WaveConfig //struktura odpowiada za mieszanie potworow w fali
 {
     std::vector<int> kolejnoscEnemies; // w jakiej kolejnosci vbeda tworzone potwory - np.{0,0,1,0,0,1}    
-    float delay;
+	//dodoalam 0.0f zeby mozna bylo ustawic opoznienie miedzy spawnowaniem
+    float delay=0.0f;
 };
 
 
