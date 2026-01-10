@@ -70,6 +70,7 @@ float dystansPunktuOdOdcinka(sf::Vector2f p, sf::Vector2f a, sf::Vector2f b) {
 
 
 void handleForgeEvent(const sf::Event& event, EnemyManager& manager) {
+	if (g_kierownikWiezy == nullptr) return;
 	//tab- ukrywamy kuznie
 
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {

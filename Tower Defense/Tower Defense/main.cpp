@@ -256,7 +256,9 @@ int main() {
                 }
 
 
-                handleForgeEvent(event, manager); //obsluga kuzni
+				if (graStart && !manager.gameOver()) { //ustawiamy wieze tylko wtedy kiedy gra jest uruchomiona i nie ma game over
+                    handleForgeEvent(event, manager); //obsluga kuzni
+                }
 
                 // Obs³uga klawisza Escape
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
