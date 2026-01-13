@@ -275,9 +275,11 @@ int main() {
 
                         //    // funkcja zadawania obra¿eñ MYSZY!!!
                         //    manager.MouseClick(worldPos);
-
-                    }
-                    else if (przyciskStart.contains(mousePos)) {
+                        if (graStart && !gamePaused && !manager.gameOver()) {
+                            kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager);
+                        }
+                    
+                    else if (przyciskStart.contains(worldPos)) {
                             graStart = false;
                             gamePaused = false;
                             currentWave = 0;
