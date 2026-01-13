@@ -1,4 +1,5 @@
-# Projekt-gra
+# Anty gnom
+
 
 
 Gra sk³ada siê z fal przeciwników.
