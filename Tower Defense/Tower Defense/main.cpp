@@ -19,11 +19,6 @@
 //ememymanager.h -> zycie i kasa gracza
 
 
-//funkcje do sceny testowej 
-// niepotrzbne?
-//map<int, ZabojcaCelow> mapa_wrogow;
-
-
 //wskaznik globalny do kierownika wrogow aby bylo mozna z niego korzystac w callbacku
 EnemyManager* g_enemyManager = nullptr;
 KierownikWiezy* g_kierownikWiezy = nullptr;
@@ -50,33 +45,10 @@ static vector<Cel>StworzListeCelow(EnemyManager& manager) {
         lista_celow.push_back({ wrog.getID(), wrog.getPosition(), (float)wrog.getHp()});
     }
 
-    //for (const auto& para : mapa_wrogow) {//iteracja po mapie
-    //    if (para.second.zycie > 0.0f) {
-    //        lista_celow.push_back({
-
-    //            para.second.id,
-    //            para.second.pozycja });
-    //    }
-    //}
-    
     
     return lista_celow;
 };
 
-
-//funkcja niepotrzebna?
-// jezeli ptowor nie ma zycia to usuwamy go z mapy 
-//static void usunpokonanecele() {
-//    for (auto it = mapa_wrogow.begin(); it != mapa_wrogow.end();) {
-//        if (it->second.zycie <= 0.0f) {
-//            it = mapa_wrogow.erase(it); // Usun cel z mapy, jesli zostal zniszczony
-//        }
-//        else {
-//            ++it;
-//        }
-//
-//    }
-//};
 
 //tworzymy pocisk
 static void Stworzpocisk(int wiezaId, int celId, sf::Vector2f pozycjaStartowa, float obrazenia) {
@@ -92,53 +64,7 @@ WaveConfig getWaveSettings(int waveNumber); //funkcja do ustawiania poziomu fal 
 
 int main() {
 
-   /* sf::RenderWindow window(sf::VideoMode(800, 600), "SFML dzia³a!");
-	sf::Clock zegar;
-	
-	EnemyManager manager;
-	g_enemyManager = &manager; // Przypisanie do wskaŸnika globalnego dla callbacku
 
-	FZwrotnaObrazen callbackObrazen = PrzyznajObrazenia;
-	//przekazanie callbacka do kierownika wiezy
-	KierownikWiezy kierownik_Wiezy(callbackObrazen);
-
-	mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
-	mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
-    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));
-    mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,190.f }, 100.f));
-    mapa_wrogow.emplace(11, ZabojcaCelow(11, { 450.f,300.f }, 150.f));
-    mapa_wrogow.emplace(12, ZabojcaCelow(12, { 609.f,570.f }, 50.f));
-
-
-    //stawiam pare wiez testowych(pozycja,typ)
-    kierownik_Wiezy.DodajWieze({ 100.f,150.f }, "tower_1");
-    kierownik_Wiezy.DodajWieze({ 250.f,150.f }, "tower_2");
-    kierownik_Wiezy.DodajWieze({ 400.f,150.f }, "tower_3");
-    kierownik_Wiezy.DodajWieze({ 550.f,150.f }, "tower_4");
-
-
-   
-	
-    vector<sf::Sprite> ikonyMenu(4);
-	vector<sf::Texture> teksturyMenu(4);
-    vector<string>typyWiez = {"tower_1","tower_2", "tower_3","tower_4"};
-    for (int i = 0; i < 4; ++i) {
-		if (teksturyMenu[i].loadFromFile(typyWiez[i] + ".png")) {
-            ikonyMenu[i].setTexture(teksturyMenu[i]);
-			//trzeba zesksalpwac te obfazki do rozmiarow ikonek menu
-			float skalaX = 50.f / ikonyMenu[i].getLocalBounds().width;
-			ikonyMenu[i].setScale(skalaX, skalaX);
-            ikonyMenu[i].setPosition(50.f + i * 100.f, 520.f);
-            
-        }
-        else {
-            cout << "Nie mozna zaladowac tekstury: " << typyWiez[i] << endl;
-        }
-    }
-
-	string wybranyTypWiezy = "tower_1";//domyslnie wybieramy narazie wieze 1
-    */
-    //do dziwiêku
     
     // Konfiguracja okna wyœwietlania i limitu klatek na sekundê 
     sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense !");
@@ -170,15 +96,6 @@ int main() {
         KierownikWiezy kierownik_Wiezy(callbackObrazen, callbackStworzPocisk);
 
         g_kierownikWiezy = &kierownik_Wiezy; // Przypisanie do wskaŸnika globalnego dla callbacku
-
-        /*mapa_wrogow.emplace(10, ZabojcaCelow(10, { 150.f,150.f }, 100.f));
-        mapa_wrogow.emplace(11, ZabojcaCelow(11, { 400.f,300.f }, 150.f));
-        mapa_wrogow.emplace(12, ZabojcaCelow(12, { 600.f,500.f }, 50.f));*/
-
-        //stawiam pare wiez testowych(pozycja,typ)
-        //kierownik_Wiezy.DodajWieze({ 100.f,100.f }, "tower_1");
-        //kierownik_Wiezy.DodajWieze({ 300.f,400.f }, "tower_2");
-
 
 
         // SYSTEM GRY 
@@ -220,13 +137,14 @@ int main() {
         sf::Sprite resumeSprite;
         resumeTexture.loadFromFile("../Assets/pause/resume.png");
         resumeSprite.setTexture(resumeTexture);
-        resumeSprite.setPosition(768.f - resumeSprite.getGlobalBounds().width / 2.f, 50.f);
+        resumeSprite.setPosition(0.f, 100.f);
 
         sf::Texture restartTexture;
         sf::Sprite restartSprite;
         restartTexture.loadFromFile("../Assets/pause/restart.png");
         restartSprite.setTexture(restartTexture);
-        restartSprite.setPosition(768.f - restartSprite.getGlobalBounds().width / 2.f, 100.f);
+        restartSprite.setPosition(0.f, 50.f);
+
 
         sf::FloatRect przyciskStart(
             524.f,
@@ -240,18 +158,18 @@ int main() {
             1010.f - 520.f,
             675.f - 570.f
         );
+        sf::FloatRect przyciskResume(
+            524.f,
+            490.f,
+            997.f - 524.f,
+            736.f - 642.f
+        );
 
         // Zmienne steruj¹ce stanem gry
         sf::Clock zegar;
         int currentWave = 0;
         bool graStart = false; //zmienna sprawdzajaca czy gra zostala ropoczeta
         bool gamePaused = false;
-
-
-
-
-
-
 
 
         // G³ówna pêtla gry
@@ -270,25 +188,6 @@ int main() {
                     window.close();
                     break;
                    
-                }
-                if (gamePaused &&
-                    event.type == sf::Event::MouseButtonPressed &&
-                    event.mouseButton.button == sf::Mouse::Left)
-                {
-                    sf::Vector2f mousePos =
-                        window.mapPixelToCoords(sf::Mouse::getPosition(window), uiView);
-                    if (resumeSprite.getGlobalBounds().contains(mousePos)) {
-                        gamePaused = false; // RESUME
-                    }
-                    else if (restartSprite.getGlobalBounds().contains(mousePos)) {
-                        gamePaused = false;
-                        graStart = false;
-                        currentWave = 0;
-                        manager.reset();
-                        kierownik_Wiezy.reset();
-                    }
-
-                    continue;
                 }
                 // Logika w trakcie gry
                 if (manager.gameOver()) {
@@ -346,7 +245,24 @@ int main() {
                     continue;
                 }
 
-
+                if (gamePaused) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                        sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+                        sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
+                        if (przyciskResume.contains(mousePos)) {
+                            graStart = true;
+							gamePaused = false;
+                        }
+                        else if (przyciskStart.contains(mousePos)) {
+                            graStart = false;
+                            gamePaused = false;
+                            currentWave = 0;
+                            manager.reset();
+                            kierownik_Wiezy.reset();
+                        }
+                    }
+                    continue;
+                }
 
          
 
@@ -381,8 +297,6 @@ int main() {
                 //zaktualizowac system wiez pokazujac mu liste potencjalnych celow
                 kierownik_Wiezy.Aktualizuj(czasDelta, aktualna_lista_celow);
 
-                //usuwamy pokonane cele z mapy
-                //usunpokonanecele();
             }
        
 
@@ -402,16 +316,6 @@ int main() {
 
                 // Rysowanie przeciwników i logiki
                 manager.draw(window);
-
-                // --- RYSOWANIE WIE¯ I CELÓW TESTOWYCH (Z Kodu 1) ---
-                // Rysowanie  pociskow (debug)
-                /*for (const auto& para : mapa_wrogow) {
-                    sf::RectangleShape ksztaltCelu({ 20.f, 20.f });
-                    ksztaltCelu.setOrigin(10.f, 10.f);
-                    ksztaltCelu.setPosition(para.second.pozycja);
-                    ksztaltCelu.setFillColor(sf::Color::Green);
-                    window.draw(ksztaltCelu);
-                }*/
 
                 // Rysowanie  pociskow
                 kierownik_Wiezy.RysujDebug(window);
