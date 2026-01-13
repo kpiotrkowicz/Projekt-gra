@@ -143,6 +143,9 @@ int main() {
     // Konfiguracja okna wyœwietlania i limitu klatek na sekundê 
     sf::RenderWindow window(sf::VideoMode(1536, 1024), "Tower Defense !");
     window.setFramerateLimit(60);
+    sf::View worldView = window.getDefaultView();
+    sf::View uiView = window.getDefaultView();
+
     
 
 
@@ -198,6 +201,33 @@ int main() {
         gameOverSprite.setTexture(gameOverTexture); //ustawiamy teksture dla sprite'a
         gameOverSprite.setPosition(0.f, 0.f); //ustawiamy pozycje sprite na (0,0)
 
+        //PAUSE MENU 
+        sf::Texture pauseTexture;
+        sf::Sprite pauseSprite;
+        pauseTexture.loadFromFile("../Assets/pause/pause.png");
+        pauseSprite.setTexture(pauseTexture);
+        sf::Vector2u winSize = window.getSize();
+        sf::Vector2u texSize = pauseTexture.getSize();
+
+        pauseSprite.setScale(
+            (float)winSize.x / texSize.x,
+            (float)winSize.y / texSize.y
+        );
+
+        pauseSprite.setPosition(0.f, 0.f);
+
+        sf::Texture resumeTexture;
+        sf::Sprite resumeSprite;
+        resumeTexture.loadFromFile("../Assets/pause/resume.png");
+        resumeSprite.setTexture(resumeTexture);
+        resumeSprite.setPosition(768.f - resumeSprite.getGlobalBounds().width / 2.f, 50.f);
+
+        sf::Texture restartTexture;
+        sf::Sprite restartSprite;
+        restartTexture.loadFromFile("../Assets/pause/restart.png");
+        restartSprite.setTexture(restartTexture);
+        restartSprite.setPosition(768.f - restartSprite.getGlobalBounds().width / 2.f, 200.f);
+
         sf::FloatRect przyciskStart(
             524.f,
             642.f,
@@ -222,6 +252,8 @@ int main() {
 
 
 
+
+
         // G³ówna pêtla gry
         while (window.isOpen()) {
             sf::Event event;
@@ -237,6 +269,26 @@ int main() {
                     g_enemyManager = nullptr;
                     window.close();
                     break;
+                   
+                }
+                if (gamePaused &&
+                    event.type == sf::Event::MouseButtonPressed &&
+                    event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos =
+                        window.mapPixelToCoords(sf::Mouse::getPosition(window), uiView);
+                    if (resumeSprite.getGlobalBounds().contains(mousePos)) {
+                        gamePaused = false; // RESUME
+                    }
+                    else if (restartSprite.getGlobalBounds().contains(mousePos)) {
+                        gamePaused = false;
+                        graStart = false;
+                        currentWave = 0;
+                        manager.reset();
+                        kierownik_Wiezy.reset();
+                    }
+
+                    continue;
                 }
                 // Logika w trakcie gry
                 if (manager.gameOver()) {
@@ -256,17 +308,21 @@ int main() {
                 }
 
 
-				if (graStart && !manager.gameOver()) { //ustawiamy wieze tylko wtedy kiedy gra jest uruchomiona i nie ma game over
+                if (graStart && !gamePaused && !manager.gameOver()) { //ustawiamy wieze tylko wtedy kiedy gra jest uruchomiona i nie ma game over
                     handleForgeEvent(event, manager); //obsluga kuzni
                 }
-
-                // Obs³uga klawisza Escape
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                    graStart = false;
-                    // gameOver = false; // Logika gameOver jest teraz pobierana z managera
+                //escape
+                if (event.type == sf::Event::KeyPressed &&
+                    event.key.code == sf::Keyboard::Escape)
+                {
+                    if (graStart && !manager.gameOver()) {
+                        gamePaused = !gamePaused;
+                    }
+                    continue;
                 }
+
 				// Obs³uga klikniêæ myszy podczas gry 10.01.2026
-                if (graStart && !manager.gameOver()) {
+                if (graStart && !gamePaused && !manager.gameOver()) {
 					if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 						sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 						sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
@@ -284,7 +340,7 @@ int main() {
                         sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
                         if (przyciskStart.contains(mousePos)) {
                             graStart = true; //ustawiamy zmienna na true, aby rozpocz gre
-                            continue;
+                            
                         }
                     }
                     continue;
@@ -292,34 +348,7 @@ int main() {
 
 
 
-                //if (event.type == sf::Event::KeyPressed) {
-                    /*if (event.key.code == sf::Keyboard::S) {
-                        for (int i = 0; i < 30; i++) {
-                            int id = 100 + i;
-                            mapa_wrogow.emplace(id, ZabojcaCelow(id, { (float)(rand() % 600 + 100),(float)(rand() % 400 + 100) }, 50.f));
-                        }
-                        cout << "STRES test dodano 30 celow" << endl;
-                    }*/
-
-                    // if (event.key.code == sf::Keyboard::D) {
-                      //   kierownik_Wiezy.UlepszWieze(1); // Ulepsz wieze o ID 1
-                     //}
-               //  }
-
-
-
-
-                 // do testu, zadanie obrazen przyciskiem myszy
-                 // tu bedzie zmiana na wieze
-                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                    // pozycja myszy wzglêdem okna
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-                    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-                    kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager);//sprawdzamy czy kliknieto na wieze i czy ulepszac
-
-                //    // funkcja zadawania obra¿eñ MYSZY!!!
-                //    manager.MouseClick(worldPos);
-                }
+         
 
 
                 // Uruchomienie nowej fali po naciœniêciu Spacji, jeœli obecna fala siê zakoñczy³a
@@ -355,6 +384,7 @@ int main() {
                 //usuwamy pokonane cele z mapy
                 //usunpokonanecele();
             }
+       
 
             // Rysowanie sceny
             window.clear(sf::Color(20, 20, 30)); // Kolor t³a z 
@@ -366,6 +396,7 @@ int main() {
                 window.draw(gameOverSprite); // Wyœwietlenie ekranu koñca gry
             }
             else {
+                window.setView(worldView);
                 // Rysowanie aktywnej rozgrywki
                 renderMapa(window); //rysuje mape
 
@@ -387,6 +418,13 @@ int main() {
 
                 rysujHUD(window, manager.getPlayerHealth(), manager.getPlayerMoney(), currentWave); //rysuje hud 
                 rysujForge(window, manager); //rysuje kuznie 
+                if (gamePaused) {
+                    window.draw(pauseSprite);
+                    window.draw(resumeSprite);
+                    window.draw(restartSprite);
+                }
+
+
             }
 
             window.display();
