@@ -316,7 +316,7 @@ int main() {
                     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
                     sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
                     kierownik_Wiezy.ObsluzKlikniecie(worldPos, manager);//sprawdzamy czy kliknieto na wieze i czy ulepszac
-
+                    
                 //    // funkcja zadawania obra¿eñ MYSZY!!!
                 //    manager.MouseClick(worldPos);
                 }

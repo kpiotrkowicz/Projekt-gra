@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 using namespace std;
-const int MAKSYMPOZIOM = 3;
+
 // Struktura reprezentujaca potencjalny cel, przekazywania wiezy inf o potencjalnych celach
 struct Cel {
 	int id; // Unikalne ID celu
@@ -27,8 +27,9 @@ class wieza {
 
 	void zasiegDebug(sf::RenderWindow& window); // Funkcja do rysowania zasiegu wiezy (debug)
 	// Ustawienie typu targetowania
-	bool Ulepsz();
-	bool ZmniejszPoziom();
+	bool Ulepsz(int& portfel);
+	bool ZmniejszPoziom(int& portfel);
+	bool doUsuniecia = false;
 	int dajPoziom() const { 
 		return poziom; 
 	}
@@ -36,8 +37,14 @@ class wieza {
 		
 		return sprite.getGlobalBounds().contains(mousePos);
 	}
+	float pobierzCzasIstnienia() const { return zegarIstnienia.getElapsedTime().asSeconds(); }
+	void resetujUsuniecie() { czekajNaUsuniecie = false; } // Pozwala "odwo³aæ" próbê sprzeda¿y
 private:
 	//lista celow- argument funkcji
+	sf::Clock zegarIstnienia;
+	bool czekajNaUsuniecie = false;//flaga czy wieza ma byc usunieta jak zmniejszamy poziom
+	int kosztUlepszenia;
+	int cenaSprzedazy ;
 	void ZnajdzCel(const vector<Cel>& potencjalneCele);
 	void Strzel();
 	int poziom=1;
@@ -47,6 +54,10 @@ private:
 	sf::Texture tekstura;
 	sf::Sprite sprite;
 	string typ;
+
+	sf::Font czcionka;
+	sf::Text informacyjny;
+	float czasWyswietlaniatekstu = 0.0f;
 
 	float zasieg; // Zasieg wiezy
 	float obrazenia; // Obrazenia zadawane przez wieze
@@ -60,5 +71,5 @@ private:
 	//sf::Text tekstPoziom;
 	sf::Texture teksturyPoziomow[MAKSYMPOZIOM]; // Tekstury dla kazdego poziomu wiezy
 	sf::Sprite spritePoziom; // Sprite do wyswietlania poziomu wiezy
-	void aktualizujWygladPoziomu(); // Funkcja do aktualizacji wygladu wiezy w zaleznosci od poziomu
+	
 };

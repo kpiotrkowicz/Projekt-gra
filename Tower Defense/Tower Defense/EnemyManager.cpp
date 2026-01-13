@@ -175,3 +175,7 @@ void EnemyManager::reset() {
     spawnTimer = 0.f;
 
 }
+
+int& EnemyManager::moneyRef() {
+    return playerMoney;
+}

@@ -17,6 +17,13 @@ wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float 
 	typTargetowania("najblizszy"),// Domyslny typ targetowania
 	poziom(1),typ(typ)
 {
+	// Powi¹zanie z cenami z forge.cpp
+	if (typ == "tower_1")      kosztUlepszenia = 50;
+	else if (typ == "tower_2") kosztUlepszenia = 100;
+	else if (typ == "tower_3") kosztUlepszenia = 200;
+	else if (typ == "tower_4") kosztUlepszenia = 350;
+	cenaSprzedazy = static_cast<int>(kosztUlepszenia * 0.75f); // 75% kosztu ulepszenia jako cena sprzedazy
+	// Za³aduj teksturê wie¿y na podstawie typu
 	if (tekstura.loadFromFile("../Assets/hud/" + typ + ".png")) {
 		sprite.setTexture(tekstura);
 		sf::FloatRect b = sprite.getLocalBounds();
@@ -41,6 +48,14 @@ wieza::wieza(int id, sf::Vector2f pozycja, float zasieg, float obrazenia, float 
 	spritePoziom.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 
 	cout << "Wieza poziom " << poziom << " ustawiona.\n" << endl;
+
+	if (czcionka.loadFromFile("../Assets/fonts/font.ttf")) {
+		informacyjny.setFont(czcionka);
+		informacyjny.setCharacterSize(20);
+		informacyjny.setFillColor(sf::Color::Red);
+		informacyjny.setOutlineColor(sf::Color::Black);
+		informacyjny.setOutlineThickness(1.5f);
+	}
 
 }
 
@@ -80,7 +95,9 @@ void wieza::Aktualizuj(float czasDelta, const vector<Cel>& potencjalneCele)
 		}
 		
 	}
-	
+	if (czasWyswietlaniatekstu > 0.0f) {
+		czasWyswietlaniatekstu -= czasDelta; // Zmniejsz czas wyswietlania tekstu
+	}
 }
 
 //jak znajdowac cele - szukamy najblizszego celu
@@ -166,41 +183,81 @@ void wieza::zasiegDebug(sf::RenderWindow& window)
 	//ikona poziomu obok wiezy
 	spritePoziom.setPosition(pozycja.x + 40.f, pozycja.y - 20.f);
 	window.draw(spritePoziom);
+
+	//rysuuje max/min poziom nad wiweza jesli jest taka potzreaba
+	if (czasWyswietlaniatekstu > 0.0f)
+	{
+		informacyjny.setPosition(pozycja.x - 60.f, pozycja.y - 80.f);
+		window.draw(informacyjny);
+	}
+
 }
 
-bool wieza::Ulepsz()
+bool wieza::Ulepsz(int& portfel)
 {
+	int koszt = kosztUlepszenia * poziom; // Koszt ulepszenia zalezy od obecnego poziomu
 	if (poziom < MAKSYMPOZIOM)
 	{
-		poziom += 1;
-		spritePoziom.setTexture(teksturyPoziomow[poziom - 1]);
-		zasieg *= 1.15f; // Zwieksz zasieg o 15%
-		obrazenia *= 1.3f; // Zwieksz obrazenia o 30%
-		czasOdnowienia *= 0.9f; // Zmniejsz czas odnowienia o 10%
-		cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
-		return true;
+		if (portfel >= koszt) {
+			portfel -= koszt;
+
+
+			poziom += 1;
+			spritePoziom.setTexture(teksturyPoziomow[poziom - 1]);
+			zasieg *= 1.15f; // Zwieksz zasieg o 15%
+			obrazenia *= 1.3f; // Zwieksz obrazenia o 30%
+			czasOdnowienia *= 0.9f; // Zmniejsz czas odnowienia o 10%
+			cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
+			return true;
+		}
+		else//brak pieniedzy
+		{
+			informacyjny.setString("BRAK ZLOTA! WYMAGANE:" + to_string(koszt));
+			czasWyswietlaniatekstu = 2.0f; // Napis bêdzie widoczny przez 2 sekundy
+			return false;
+		}
 	}
-	else
-	{
-		cout << "Wieza " << id << " jest juz na maksymalnym poziomie!" << endl;
+
+	else {//limit poziomow 
+				informacyjny.setString("MAKSYMALNY POZIOM!");
+		czasWyswietlaniatekstu = 2.0f; // Napis bêdzie widoczny przez 2 sekundy
 		return false;
 	}
-}
-bool wieza::ZmniejszPoziom()
+	}
+
+bool wieza::ZmniejszPoziom(int& portfel)
 {
 	if (poziom>1)
 	{
+		int zwrotZaPoziom = (kosztUlepszenia * (poziom - 1)) / 2;
+		portfel += zwrotZaPoziom;
 		poziom-=1;
 		spritePoziom.setTexture(teksturyPoziomow[poziom - 1]);
 		zasieg /= 1.15f; // Zwieksz zasieg o 15%
 		obrazenia /= 1.3f; // Zwieksz obrazenia o 30%
 		czasOdnowienia /= 0.9f; // Zmniejsz czas odnowienia o 10%
+		//resetujemy flage usuniecia wiezy
+		czekajNaUsuniecie = false;
 		cout << "Wieza " << id << " ulepszona do poziomu " << poziom << endl;
+
 		return true;
 	}
 	else
 	{
-		cout << "Wieza " << id << " jest juz na maksymalnym poziomie!" << endl;
-		return false;
+		if (!czekajNaUsuniecie) {
+			//pierwsze klikniecoe to tylko informacja o tym ze poziom minimalny
+			informacyjny.setString("POZIOM MINIMALNY!\n (jesli chcesz usunac wieze nacisnij jeszcze raz)");
+			czasWyswietlaniatekstu = 2.0f; // Napis bêdzie widoczny przez 2 sekundy
+			czekajNaUsuniecie = true;
+			return false;
+		}
+		else {
+			//drugie klikniecie usuniecie i zwrot pieniedzy
+			portfel += cenaSprzedazy;
+			doUsuniecia = true;//zniekniecie wiezy przez kierownika wiez
+			cout << "Wieza " << id << " zostala sprzedana. Zwrot: " << cenaSprzedazy << endl;	
+			return true;
+		}
+		
 	}
 }

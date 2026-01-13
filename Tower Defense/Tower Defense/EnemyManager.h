@@ -34,6 +34,8 @@ public:
 
     //ile pieniedzy ma gracz
     int getPlayerMoney() const { return playerMoney; }
+    //zwracanie kasy za np wieze
+    int& moneyRef();
 
 	//koniec gry gdy zycie spadnie do zera
 	bool gameOver() const { return playerHealth <= 0; }

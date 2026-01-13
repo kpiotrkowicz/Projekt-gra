@@ -60,6 +60,20 @@ void KierownikWiezy::Aktualizuj(float czasDelta, const vector<Cel>& cele) {
 			++it;
 		}
 	}
+	for (auto it = wieze.begin(); it != wieze.end(); ) {
+		if (it->doUsuniecia) {
+			// Sprawdzamy, czy usuwana wie¿a jest t¹, która ma otwarte menu
+			if (wybranaWieza == &(*it)) {
+				menuWidoczne = false;  // Ukrywamy menu ulepszeñ
+				wybranaWieza = nullptr; // Resetujemy wskaŸnik
+			}
+			it = wieze.erase(it); // Usuwamy wie¿ê z listy
+		}
+		else {
+			++it;
+		}
+	}
+	
 }
 
 
@@ -165,49 +179,51 @@ void KierownikWiezy::UtworzPocisk(int wiezaId, int celId, sf::Vector2f pozycjaSt
 //zrobione dzi 10.01.2026
 void KierownikWiezy::ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manager)
 {
+	//if (mousePos.y > 700)return;//ma sluzyc do tego zeby nie pokauzwal sie znaczek ulepszenia jak postawimy wieze
 	//jesli menu otwarte to sprawdzamy czy kliknieto w ikone ulepszenia
+
 	if (menuWidoczne && wybranaWieza != nullptr) {
 		if (spriteMenuUlepszen.getGlobalBounds().contains(mousePos)) {
 			//kliknieto w ikone ulepszenia
 			float srodekY = spriteMenuUlepszen.getPosition().y;
+			int& portfel = manager.moneyRef();
+
 			if (mousePos.y < srodekY) {
-				int koszt = 100 * wybranaWieza->dajPoziom(); //koszt ulepszenia roœnie wraz z poziomem wiezy
-				if (manager.getPlayerMoney() >= koszt) {
-					if (wybranaWieza->Ulepsz()) {
-						manager.moneySum(-koszt); //odejmujemy pieniadze gracza
-						cout << "Ulepszono wieze o id: " << wybranaWieza->PobierzId() << " do poziomu: " << wybranaWieza->dajPoziom() << endl;
-					}
-					else {
-						cout << "Wieza o id: " << wybranaWieza->PobierzId() << " jest juz na maksymalnym poziomie ulepszen." << endl;
-					}
+				//kliknieto w gorna czesc ikony- ulepszamy wieze
+
+
+				if (wybranaWieza->Ulepsz(portfel)) {
+
+					cout << "Ulepszono wieze o id: " << wybranaWieza->PobierzId() << " do poziomu: " << wybranaWieza->dajPoziom() << endl;
 				}
-				else {
-					cout << "Brak wystarczajacych srodkow na ulepszenie wiezy o id: " << wybranaWieza->PobierzId() << endl;
-				}
+				wybranaWieza->resetujUsuniecie(); //Jeœli ulepszono, nie usuwaæ
 			}
+
 			else {
 				//kliknieto w dolna czesc ikony- zmniejszamy poziom wiezy
-				if (wybranaWieza->ZmniejszPoziom()) {
-					int zwrot = 50 * wybranaWieza->dajPoziom(); //zwrot pieniedzy zalezy od poziomu wiezy
-					manager.moneySum(zwrot); //dodajemy pieniadze gracza
-					cout << "Zmniejszono poziom wiezy o id: " << wybranaWieza->PobierzId() << " do poziomu: " << wybranaWieza->dajPoziom() << endl;
+				//ta sama f obsluzy napis poziom minimalny i 2 klikniecie
+				if (wybranaWieza->ZmniejszPoziom(portfel) ){
+					if (wybranaWieza->doUsuniecia) {
+						menuWidoczne = false;
+						wybranaWieza = nullptr;
+						return;
+					}
 				}
-				else {
-					cout << "Wieza o id: " << wybranaWieza->PobierzId() << " jest na najnizszym poziomie." << endl;
-				}
-				//zamykamy menu bez ulepszania
-			
-				cout << "Zamknieto menu ulepszen bez ulepszania wiezy o id: " << wybranaWieza->PobierzId() << endl;
 			}
+
 			menuWidoczne = false;
-			wybranaWieza = nullptr;
-			return;
+				wybranaWieza = nullptr;
+				return;
 		}
 	}
-	//sprawdzamy czy kliknieto w jakas wieze
 	bool kliknietoWWieze = false;
 	for (auto& wieza_obiekt : wieze) {
 		if (wieza_obiekt.czyKliknieto(mousePos)) {
+			if (wieza_obiekt.pobierzCzasIstnienia()<0.2f) {
+				return;
+			}
+				
+			if (wybranaWieza)wybranaWieza->resetujUsuniecie(); //nie usuwamy wiezy)
 			wybranaWieza = &wieza_obiekt;
 			menuWidoczne = true;
 			//ustawiamy pozycje menu nad wieza
@@ -216,8 +232,11 @@ void KierownikWiezy::ObsluzKlikniecie(sf::Vector2f mousePos, EnemyManager& manag
 			break;
 		}
 	}
+	
+		
 	//kliknieto w puste miejsce na mapie - zamykamy menu
 	if (!kliknietoWWieze) {
+		if (wybranaWieza)wybranaWieza->resetujUsuniecie(); //nie usuwamy wiezy
 		menuWidoczne = false;
 		wybranaWieza = nullptr;
 	}
