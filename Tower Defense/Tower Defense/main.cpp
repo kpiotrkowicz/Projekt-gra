@@ -226,7 +226,7 @@ int main() {
         sf::Sprite restartSprite;
         restartTexture.loadFromFile("../Assets/pause/restart.png");
         restartSprite.setTexture(restartTexture);
-        restartSprite.setPosition(768.f - restartSprite.getGlobalBounds().width / 2.f, 200.f);
+        restartSprite.setPosition(768.f - restartSprite.getGlobalBounds().width / 2.f, 100.f);
 
         sf::FloatRect przyciskStart(
             524.f,
