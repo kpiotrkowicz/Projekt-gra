@@ -22,11 +22,12 @@ public:
 	sf::Vector2f PobierzPozycjeW() const { return pozycja; }
 	void PrzyznajObrazenia(int celId, float ilosc);
 	bool UlepszWieze(int id_wiezy);
+	void Rysuj(sf::RenderWindow& window);
 
 private:
 	vector<wieza> wieze; //lista wiez
 	//unikalne id dla wiez zeby moc zarzadac pociskami
-	vector<unique_ptr<pocisk>> pociski; //lista pociskow zarzadzana przez kierownika wiezy
+	vector<wieza> pociski; //lista pociskow zarzadzana przez kierownika wiezy
 
 	int nastepneIdWiezy = 1; //unikalne id dla wiez
 	int nastepneIdPocisku = 1; //unikalne id dla pociskow

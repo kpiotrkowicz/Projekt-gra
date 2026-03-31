@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include "EnemyManager.h"
 
-extern int wybranawieza;
+extern int wybranaWieza;
+extern int cenaWiezy[4];
 
 void initForge(sf::RenderWindow& window);
 void handleForgeEvent(const sf::Event& event, EnemyManager& manager);
